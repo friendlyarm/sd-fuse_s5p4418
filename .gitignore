@@ -1,0 +1,36 @@
+#
+# NOTE! Don't add files that are generated in specific
+# subdirectories here. Add them in the ".gitignore" file
+# in that subdirectory instead.
+#
+# Normal rules
+#
+
+*.rej
+*.orig
+*.patch
+*~
+*.diff
+
+#
+# Top-level generic files
+#
+
+/mnt
+/prebuilt/rootfs.tgz
+/vendor
+
+#
+# Generated files
+#
+
+*.o
+*.a
+*.img
+*.lo
+*.la
+*.log
+
+# cscope files
+cscope.*
+
