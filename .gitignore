@@ -17,8 +17,11 @@
 #
 
 /mnt
-/prebuilt/rootfs.tgz
 /vendor
+/android
+/debian
+/android*-images.tgz*
+/debian*-images.tgz*
 
 #
 # Generated files

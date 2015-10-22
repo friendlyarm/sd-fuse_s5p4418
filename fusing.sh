@@ -69,6 +69,44 @@ if [ ${DEV_SIZE} -le 3800000 ]; then
 fi
 
 # ----------------------------------------------------------
+# Get target OS
+
+case ${2,,} in
+debian)
+	TARGET_OS=debian
+	PARTMAP=./${TARGET_OS}/partmap.txt
+	;;
+*)
+	TARGET_OS=android
+	PARTMAP=./${TARGET_OS}/partmap.txt
+	if [ ! -z ${ANDROID_PRODUCT_OUT} ]; then
+		PARTMAP=${ANDROID_PRODUCT_OUT}/partmap.txt
+	fi
+	;;
+esac
+
+if [ ! -d ${TARGET_OS} ]; then
+	echo -n "Warn: Image not found for ${TARGET_OS^}, download now (Y/N)? "
+
+	while read -r -n 1 -t 10 -s USER_REPLY; do
+		if [[ ${USER_REPLY} = [Nn] ]]; then
+			echo ${USER_REPLY}
+			exit 1
+		elif [[ ${USER_REPLY} = [Yy] ]]; then
+			echo ${USER_REPLY}
+			break;
+		fi
+	done
+
+	if [ -z ${USER_REPLY} ]; then
+		echo "Cancelled."
+		exit 1
+	fi
+
+	./tools/get_rom.sh ${TARGET_OS} || exit 1
+fi
+
+# ----------------------------------------------------------
 # Fusing 2ndboot, bootloader to card
 
 BOOT_DIR=./prebuilt
@@ -106,20 +144,6 @@ FW_SETENV=./tools/fw_setenv
 SD_UPDATE=./tools/sd_update
 SD_TUNEFS=./tools/sd_tune2fs.sh
 
-case ${2,,} in
-debian)
-	TARGET_OS=debian
-	PARTMAP=./${TARGET_OS}/partmap.txt
-	;;
-*)
-	TARGET_OS=android
-	PARTMAP=./${TARGET_OS}/partmap.txt
-	if [ ! -z ${ANDROID_PRODUCT_OUT} ]; then
-		PARTMAP=${ANDROID_PRODUCT_OUT}/partmap.txt
-	fi
-	;;
-esac
-
 echo "---------------------------------"
 echo "${TARGET_OS^} filesystem fusing"
 echo "Image root: `dirname ${PARTMAP}`"
@@ -153,7 +177,7 @@ else
 	fi
 fi
 
-#echo "---------------------------------"
+echo "---------------------------------"
 echo "${TARGET_OS^} is fused successfully."
 echo "All done."
 
