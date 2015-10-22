@@ -102,6 +102,7 @@ echo ""
 # ----------------------------------------------------------
 # partition card & fusing filesystem
 
+FW_SETENV=./tools/fw_setenv
 SD_UPDATE=./tools/sd_update
 SD_TUNEFS=./tools/sd_tune2fs.sh
 
@@ -122,6 +123,7 @@ esac
 echo "---------------------------------"
 echo "${TARGET_OS^} filesystem fusing"
 echo "Image root: `dirname ${PARTMAP}`"
+echo
 
 if [ ! -f ${PARTMAP} ]; then
 	echo "Error: ${PARTMAP}: File not found"
@@ -129,10 +131,17 @@ if [ ! -f ${PARTMAP} ]; then
 	exit 1
 fi
 
+# set uboot env, like cmdline
+${FW_SETENV} /dev/${DEV_NAME} -s ${BOOT_DIR}/${TARGET_OS}_env.conf
+
 # write ext4 image
 ${SD_UPDATE} -d /dev/${DEV_NAME} -p ${PARTMAP}
+if [ $? -ne 0 ]; then
+	echo "Error: filesystem fusing failed, Stop."
+	exit 1
+fi
 
-partprobe /dev/${DEV_NAME} 2>/dev/null
+partprobe /dev/${DEV_NAME} -s 2>/dev/null
 if [ $? -ne 0 ]; then
 	echo "Warn: Re-read the partition table failed"
 
