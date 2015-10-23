@@ -68,10 +68,21 @@ function download_file()
 #----------------------------------------------------------
 # download image and verify it
 
-download_file ${ROMFILE}
 download_file ${ROMFILE}.hash.md5
 
-FA_DoExec md5sum -c ${ROMFILE}.hash.md5
+if [ -f ${ROMFILE} ]; then
+	md5sum -c ${ROMFILE}.hash.md5 >/dev/null 2>&1
+	NEED_DL=$?
+else
+	NEED_DL=1
+fi
+
+# skip if main file exist and md5sum check OK
+if [ ${NEED_DL} -ne 0 ]; then
+	download_file ${ROMFILE}
+fi
+
+md5sum -c ${ROMFILE}.hash.md5
 if [[ "$?" != 0 ]]; then
 	echo "Error in downloaded file, please try again, or download it by"
 	echo "bowser or other tools, URL is:"
@@ -86,6 +97,6 @@ fi
 mkdir -p ${TARGET}
 
 if [ -f ${ROMFILE} ]; then
-	tar xzvf ${ROMFILE} -C ${TARGET}
+	FA_DoExec tar xzvf ${ROMFILE} -C ${TARGET} || exit 1
 fi
 
