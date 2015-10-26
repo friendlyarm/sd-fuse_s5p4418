@@ -33,14 +33,17 @@ if [ -z $1 ]; then
 fi
 
 case $1 in
-/dev/sd[a-z] | /dev/loop0)
+/dev/sd[a-z] | /dev/loop[0-9])
 	if [ ! -e $1 ]; then
 		echo "Error: $1 does not exist."
 		exit 1
 	fi
 	DEV_NAME=`basename $1`
-	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size`
-	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable`;;
+	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size` ;;&
+/dev/sd[a-z])
+	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
+/dev/loop[0-9])
+	REMOVABLE=1 ;;
 *)
 	echo "Error: Unsupported SD reader"
 	exit 0

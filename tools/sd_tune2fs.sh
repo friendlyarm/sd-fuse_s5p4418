@@ -31,10 +31,14 @@ if [ ! -b $1 ]; then
 fi
 
 case $1 in
-/dev/sd[a-z] | /dev/loop0)
+/dev/sd[a-z] | /dev/loop[0-9])
 	DEV_NAME=`basename $1`
-	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size`
-	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable`;;
+	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size` ;;&
+/dev/sd[a-z])
+	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
+/dev/loop[0-9])
+	DEV_NAME=`basename $1`p
+	REMOVABLE=1 ;;
 *)
 	echo "Error: Unsupported SD reader"
 	exit 0
@@ -45,13 +49,20 @@ if [ ${REMOVABLE} -le 0 ]; then
 	exit 1
 fi
 
-if [ ${BLOCK_CNT} -le 0 ]; then
+if [ -z ${BLOCK_CNT} -o ${BLOCK_CNT} -le 0 ]; then
 	echo "Error: $1 is inaccessible. Stop now!"
 	exit 1
 fi
 
-if [ ${BLOCK_CNT} -gt 134217727 ]; then
-	echo "Error: $1 size (${BLOCK_CNT}) is too large"
+let DEV_SIZE=${BLOCK_CNT}/2
+if [ ${DEV_SIZE} -gt 64000000 ]; then
+	echo "Error: $1 size (${DEV_SIZE} KB) is too large"
+	exit 1
+fi
+
+if [ ${DEV_SIZE} -le 3800000 ]; then
+	echo "Error: $1 size (${DEV_SIZE} KB) is too small"
+	echo "       At least 4GB SDHC card is required, please try another card."
 	exit 1
 fi
 

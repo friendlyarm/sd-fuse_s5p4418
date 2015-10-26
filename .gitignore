@@ -22,6 +22,7 @@
 /debian
 /android*-images.tgz*
 /debian*-images.tgz*
+/*.raw*
 
 #
 # Generated files
