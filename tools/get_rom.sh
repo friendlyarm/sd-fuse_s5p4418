@@ -20,7 +20,7 @@
 # ----------------------------------------------------------
 # base setup
 
-BASE_URL=http://112.124.9.243/dvdfiles
+BASE_URL=http://wiki.friendlyarm.com/NanoPi2/download
 BOARD=NanoPi2
 
 TARGET=${1,,}
