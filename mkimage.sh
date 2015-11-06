@@ -37,8 +37,8 @@ esac
 # ----------------------------------------------------------
 # Create zero file
 
-RAW_FILE=nanopi2-${TARGET_OS}-sd8g.img
-RAW_SIZE_MB=7900
+RAW_FILE=nanopi2-${TARGET_OS}-sd4g.img
+RAW_SIZE_MB=3900
 
 BLOCK_SIZE=1024
 let RAW_SIZE=(${RAW_SIZE_MB}*1000*1000)/${BLOCK_SIZE}
