@@ -37,7 +37,7 @@ esac
 # ----------------------------------------------------------
 # Create zero file
 
-RAW_FILE=nanopi2-${TARGET_OS}-sd8g.raw
+RAW_FILE=nanopi2-${TARGET_OS}-sd8g.img
 RAW_SIZE_MB=7900
 
 BLOCK_SIZE=1024
