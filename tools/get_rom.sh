@@ -20,7 +20,8 @@
 # ----------------------------------------------------------
 # base setup
 
-BASE_URL=http://wiki.friendlyarm.com/NanoPi2/download
+BASE_URL=http://112.124.9.243/dvdfiles
+OPT_URL=http://wiki.friendlyarm.com/NanoPi2/download
 BOARD=NanoPi2
 
 TARGET=${1,,}
@@ -54,6 +55,11 @@ function download_file()
 
 	if [ -f $1 ]; then
 		rm -fv $1
+	fi
+
+	FA_DoExec wget --spider --tries=1 ${url}
+	if [[ "$?" != 0 ]]; then
+		url=${OPT_URL}/${BOARD}/$1
 	fi
 
 	FA_DoExec wget ${url}
