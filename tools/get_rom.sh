@@ -28,7 +28,7 @@ TARGET=${1,,}
 
 case ${TARGET} in
 android)
-	ROMFILE=android-kitkat-images.tgz;;
+	ROMFILE=android-lollipop-images.tgz;;
 debian)
 	ROMFILE=debian-jessie-images.tgz;;
 *)
