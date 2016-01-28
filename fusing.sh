@@ -33,7 +33,7 @@ if [ -z $1 ]; then
 fi
 
 case $1 in
-/dev/sd[a-z] | /dev/loop[0-9])
+/dev/sd[a-z] | /dev/loop[0-9] | /dev/mmcblk1)
 	if [ ! -e $1 ]; then
 		echo "Error: $1 does not exist."
 		exit 1
@@ -42,7 +42,7 @@ case $1 in
 	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size` ;;&
 /dev/sd[a-z])
 	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
-/dev/loop[0-9])
+/dev/mmcblk1 | /dev/loop[0-9])
 	REMOVABLE=1 ;;
 *)
 	echo "Error: Unsupported SD reader"
@@ -110,11 +110,18 @@ if [ ! -d ${TARGET_OS} ]; then
 fi
 
 # ----------------------------------------------------------
+# Get host machine
+if grep 'ARMv7 Processor' /proc/cpuinfo >/dev/null; then
+	EMMC=.emmc
+	ARCH=armv7/
+fi
+
+# ----------------------------------------------------------
 # Fusing 2ndboot, bootloader to card
 
 BOOT_DIR=./prebuilt
 
-BL2_BIN=${BOOT_DIR}/2ndboot.bin
+BL2_BIN=${BOOT_DIR}/2ndboot.bin${EMMC}
 BL2_POSITION=1
 
 TBI_BIN=${BOOT_DIR}/boot.TBI
@@ -143,8 +150,8 @@ echo ""
 # ----------------------------------------------------------
 # partition card & fusing filesystem
 
-FW_SETENV=./tools/fw_setenv
-SD_UPDATE=./tools/sd_update
+FW_SETENV=./tools/${ARCH}fw_setenv
+SD_UPDATE=./tools/${ARCH}sd_update
 SD_TUNEFS=./tools/sd_tune2fs.sh
 
 echo "---------------------------------"
@@ -168,7 +175,9 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-partprobe /dev/${DEV_NAME} -s 2>/dev/null
+if [ -z ${ARCH} ]; then
+	partprobe /dev/${DEV_NAME} -s 2>/dev/null
+fi
 if [ $? -ne 0 ]; then
 	echo "Warn: Re-read the partition table failed"
 

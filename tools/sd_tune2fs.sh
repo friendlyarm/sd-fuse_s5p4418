@@ -31,12 +31,12 @@ if [ ! -b $1 ]; then
 fi
 
 case $1 in
-/dev/sd[a-z] | /dev/loop[0-9])
+/dev/sd[a-z] | /dev/loop[0-9] | /dev/mmcblk1)
 	DEV_NAME=`basename $1`
 	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size` ;;&
 /dev/sd[a-z])
 	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
-/dev/loop[0-9])
+/dev/mmcblk1 | /dev/loop[0-9])
 	DEV_NAME=`basename $1`p
 	REMOVABLE=1 ;;
 *)
@@ -75,6 +75,7 @@ FA_DoExec() {
 
 # ----------------------------------------------------------
 # do real tasks
+UUID="fa000000-4418-0000-2016-0100000000"
 
 echo "Update ext4fs for Android on $1..."
 
@@ -82,24 +83,24 @@ echo "Update ext4fs for Android on $1..."
 umount /dev/${DEV_NAME}* > /dev/null 2>&1
 
 if [ -b /dev/${DEV_NAME}1 ]; then
-	FA_DoExec tune2fs /dev/${DEV_NAME}1 -U `uuidgen` -L boot
+	FA_DoExec tune2fs /dev/${DEV_NAME}1 -U ${UUID}01 -L boot
 fi
 
 if [ -b /dev/${DEV_NAME}2 ]; then
-	FA_DoExec tune2fs /dev/${DEV_NAME}2 -U `uuidgen` -L system
+	FA_DoExec tune2fs /dev/${DEV_NAME}2 -U ${UUID}02 -L system
 fi
 
 if [ -b /dev/${DEV_NAME}3 ]; then
-	FA_DoExec tune2fs /dev/${DEV_NAME}3 -U `uuidgen` -L cache
+	FA_DoExec tune2fs /dev/${DEV_NAME}3 -U ${UUID}03 -L cache
 fi
 
 if [ -b /dev/${DEV_NAME}7 ]; then
 	FA_DoExec resize2fs /dev/${DEV_NAME}7 -f
-	FA_DoExec tune2fs /dev/${DEV_NAME}7 -U `uuidgen` -L userdata
+	FA_DoExec tune2fs /dev/${DEV_NAME}7 -U ${UUID}07 -L userdata
 
 elif [ -b /dev/${DEV_NAME}4 ]; then
 	FA_DoExec resize2fs /dev/${DEV_NAME}4 -f
-	FA_DoExec tune2fs /dev/${DEV_NAME}4 -U `uuidgen` -L userdata
+	FA_DoExec tune2fs /dev/${DEV_NAME}4 -U ${UUID}04 -L userdata
 fi
 
 sync
