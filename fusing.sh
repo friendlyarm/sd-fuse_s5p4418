@@ -119,7 +119,7 @@ fi
 # ----------------------------------------------------------
 # Fusing 2ndboot, bootloader to card
 
-BOOT_DIR=./prebuilt
+true ${BOOT_DIR:=./prebuilt}
 
 BL2_BIN=${BOOT_DIR}/2ndboot.bin${EMMC}
 BL2_POSITION=1
@@ -150,9 +150,9 @@ echo ""
 # ----------------------------------------------------------
 # partition card & fusing filesystem
 
-FW_SETENV=./tools/${ARCH}fw_setenv
-SD_UPDATE=./tools/${ARCH}sd_update
-SD_TUNEFS=./tools/sd_tune2fs.sh
+true ${FW_SETENV:=./tools/${ARCH}fw_setenv}
+true ${SD_UPDATE:=./tools/${ARCH}sd_update}
+true ${SD_TUNEFS:=./tools/sd_tune2fs.sh}
 
 echo "---------------------------------"
 echo "${TARGET_OS^} filesystem fusing"
