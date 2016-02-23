@@ -31,6 +31,11 @@ OS=$(read_conf OS tolower)
 ACTION=$(read_conf Action tolower)
 IMAGES=$(read_conf Images-${OS})
 
+if [ "${ACTION}" == "skip" ]; then
+	echo "Info: eMMC fusing skipped by user config"
+	exit 0
+fi
+
 if [ -z ${OS} -o "${ACTION}" != "install" ]; then
 	echo "Error: Invalid config in FriendlyARM.ini"
 	exit -1
@@ -59,6 +64,44 @@ if [ ! -d ${ROM_BASE}/${OS} ]; then
 fi
 
 #----------------------------------------------------------
+# led helper
+
+LED_BASE=/sys/class/leds
+
+function led_set_gpio()
+{
+	echo gpio >  ${LED_BASE}/$1/trigger
+	echo $2 >    ${LED_BASE}/$1/gpio
+	echo $3 >    ${LED_BASE}/$1/inverted
+}
+
+function led_set_timer()
+{
+	echo timer > ${LED_BASE}/$1/trigger
+	echo $2 >    ${LED_BASE}/$1/delay_off
+	echo $3 >    ${LED_BASE}/$1/delay_on
+}
+
+function led_start_fading()
+{
+	if [ ! -d    ${LED_BASE}/ledp1 ]; then
+		insmod /lib/modules/`uname -r`/leds-pwm.ko
+	fi
+	echo fading >${LED_BASE}/ledp1/trigger
+}
+
+function led_show_status()
+{
+	if [ $1 -eq 0 ]; then
+		led_start_fading
+		led_set_gpio  led2  78   1
+	else
+		led_set_timer led2  80  50
+		led_set_gpio  led1  43   1
+	fi
+}
+
+#----------------------------------------------------------
 # do fusing
 
 BASE_DIR=/usr/sd-fuse_nanopi2
@@ -71,6 +114,10 @@ export SD_UPDATE=${BASE_DIR}/tools/armv7/sd_update
 export SD_TUNEFS=${BASE_DIR}/tools/sd_tune2fs.sh
 
 cd ${ROM_BASE} && {
+	led_set_timer led2 300 300
+	led_set_gpio  led1  43   0
+
 	${SD_FUSING} /dev/mmcblk1 ${OS}
+	led_show_status $?
 }
 
