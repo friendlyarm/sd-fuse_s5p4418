@@ -20,6 +20,7 @@
 /vendor
 /android
 /debian
+/eflasher
 /android*-images.tgz*
 /debian*-images.tgz*
 /*.raw*

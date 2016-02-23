@@ -30,6 +30,8 @@ fi
 case ${1,,} in
 debian)
 	TARGET_OS=debian ;;
+eflasher)
+	TARGET_OS=eflasher ;;
 *)
 	TARGET_OS=android ;;
 esac
@@ -70,13 +72,13 @@ LOOP_DEVICE=$(losetup -f)
 echo "Using device: ${LOOP_DEVICE}"
 
 if losetup ${LOOP_DEVICE} ${RAW_FILE}; then
-    USE_KPARTX=1
-    PART_DEVICE=/dev/mapper/`basename ${LOOP_DEVICE}`
-    sleep 1
+	USE_KPARTX=1
+	PART_DEVICE=/dev/mapper/`basename ${LOOP_DEVICE}`
+	sleep 1
 else
-    echo "Error: attach ${LOOP_DEVICE} failed, stop now."
-    rm ${RAW_FILE}
-    exit 1
+	echo "Error: attach ${LOOP_DEVICE} failed, stop now."
+	rm ${RAW_FILE}
+	exit 1
 fi
 
 # ----------------------------------------------------------
@@ -86,6 +88,10 @@ FUSING_SH=./fusing.sh
 
 ${FUSING_SH} ${LOOP_DEVICE} ${TARGET_OS}
 RET=$?
+
+if [ "x${TARGET_OS}" = "xeflasher" ]; then
+	mkfs.vfat ${LOOP_DEVICE}p1 -n FriendlyARM
+fi
 
 # cleanup
 losetup -d ${LOOP_DEVICE}

@@ -43,6 +43,7 @@ case $1 in
 /dev/sd[a-z])
 	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
 /dev/mmcblk1 | /dev/loop[0-9])
+	DEV_PART=${DEV_NAME}p2
 	REMOVABLE=1 ;;
 *)
 	echo "Error: Unsupported SD reader"
@@ -77,6 +78,10 @@ fi
 case ${2,,} in
 debian)
 	TARGET_OS=debian
+	PARTMAP=./${TARGET_OS}/partmap.txt
+	;;
+eflasher)
+	TARGET_OS=eflasher
 	PARTMAP=./${TARGET_OS}/partmap.txt
 	;;
 *)
@@ -166,7 +171,11 @@ if [ ! -f ${PARTMAP} ]; then
 fi
 
 # set uboot env, like cmdline
-${FW_SETENV} /dev/${DEV_NAME} -s ${BOOT_DIR}/${TARGET_OS}_env.conf
+if [ -f ./${TARGET_OS}/env.conf ]; then
+	${FW_SETENV} /dev/${DEV_NAME} -s ./${TARGET_OS}/env.conf
+else
+	${FW_SETENV} /dev/${DEV_NAME} -s ${BOOT_DIR}/${TARGET_OS}_env.conf
+fi
 
 # write ext4 image
 ${SD_UPDATE} -d /dev/${DEV_NAME} -p ${PARTMAP}
@@ -186,6 +195,9 @@ else
 	if [ "x${TARGET_OS}" = "xandroid" ]; then
 		sleep 1
 		${SD_TUNEFS} /dev/${DEV_NAME}
+	elif [ "x${TARGET_OS}" = "xdebian" ]; then
+		sleep 1
+		resize2fs -f /dev/${DEV_PART}
 	fi
 fi
 
