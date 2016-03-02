@@ -41,6 +41,7 @@ case $1 in
 	DEV_NAME=`basename $1`
 	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size` ;;&
 /dev/sd[a-z])
+	DEV_PART=${DEV_NAME}2
 	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
 /dev/mmcblk1 | /dev/loop[0-9])
 	DEV_PART=${DEV_NAME}p2
