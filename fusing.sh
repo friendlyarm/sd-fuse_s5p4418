@@ -76,13 +76,10 @@ fi
 # ----------------------------------------------------------
 # Get target OS
 
+true ${TARGET_OS:=${2,,}}
+
 case ${2,,} in
-debian)
-	TARGET_OS=debian
-	PARTMAP=./${TARGET_OS}/partmap.txt
-	;;
-eflasher)
-	TARGET_OS=eflasher
+debian | core-qte | rtmsystem | eflasher)
 	PARTMAP=./${TARGET_OS}/partmap.txt
 	;;
 *)
@@ -94,7 +91,7 @@ eflasher)
 	;;
 esac
 
-if [ ! -d ${TARGET_OS} ]; then
+if [ ! -f ${PARTMAP} ]; then
 	echo -n "Warn: Image not found for ${TARGET_OS^}, download now (Y/N)? "
 
 	while read -r -n 1 -t 10 -s USER_REPLY; do
@@ -174,8 +171,10 @@ fi
 # set uboot env, like cmdline
 if [ -f ./${TARGET_OS}/env.conf ]; then
 	${FW_SETENV} /dev/${DEV_NAME} -s ./${TARGET_OS}/env.conf
-else
+elif [ -f ${BOOT_DIR}/${TARGET_OS}_env.conf ]; then
 	${FW_SETENV} /dev/${DEV_NAME} -s ${BOOT_DIR}/${TARGET_OS}_env.conf
+else
+	${FW_SETENV} /dev/${DEV_NAME} -s ${BOOT_DIR}/generic_env.conf
 fi
 
 # write ext4 image

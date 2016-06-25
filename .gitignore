@@ -19,10 +19,13 @@
 /mnt
 /vendor
 /android
+/core-qte
 /debian
 /eflasher
 /android*-images.tgz*
+/core-qte-images.tgz*
 /debian*-images.tgz*
+/emmc-flasher-images.tgz*
 /*.raw*
 
 #

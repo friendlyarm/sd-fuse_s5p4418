@@ -29,10 +29,14 @@ TARGET=${1,,}
 case ${TARGET} in
 android)
 	ROMFILE=android-lollipop-images.tgz;;
+core-qte)
+	ROMFILE=core-qte-images.tgz;;
 debian)
 	ROMFILE=debian-jessie-images.tgz;;
+eflasher)
+	ROMFILE=emmc-flasher-images.tgz;;
 *)
-	echo "Usage: $0 <android|debian>"
+	echo "Usage: $0 <android|core-qte|debian>"
 	exit 1
 esac
 

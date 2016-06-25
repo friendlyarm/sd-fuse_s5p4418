@@ -25,13 +25,14 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 # ----------------------------------------------------------
-# Get target OS
+# Get platform, target OS
 
-case ${1,,} in
-debian)
-	TARGET_OS=debian ;;
-eflasher)
-	TARGET_OS=eflasher ;;
+true ${SOC:=s5p4418}
+true ${TARGET_OS:=${1,,}}
+
+case ${TARGET_OS} in
+debian | core-qte | rtmsystem | eflasher)
+	;;
 *)
 	TARGET_OS=android ;;
 esac
@@ -39,7 +40,7 @@ esac
 # ----------------------------------------------------------
 # Create zero file
 
-RAW_FILE=nanopi2-${TARGET_OS}-sd4g.img
+RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
 RAW_SIZE_MB=3900
 
 BLOCK_SIZE=1024
@@ -84,9 +85,9 @@ fi
 # ----------------------------------------------------------
 # Fusing all
 
-FUSING_SH=./fusing.sh
+true ${SD_FUSING:=./fusing.sh}
 
-${FUSING_SH} ${LOOP_DEVICE} ${TARGET_OS}
+${SD_FUSING} ${LOOP_DEVICE} ${TARGET_OS}
 RET=$?
 
 if [ "x${TARGET_OS}" = "xeflasher" ]; then
