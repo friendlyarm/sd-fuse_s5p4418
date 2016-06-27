@@ -115,7 +115,7 @@ fi
 # ----------------------------------------------------------
 # Get host machine
 if grep 'ARMv7 Processor' /proc/cpuinfo >/dev/null; then
-	EMMC=.emmc
+#	EMMC=.emmc
 	ARCH=armv7/
 fi
 
