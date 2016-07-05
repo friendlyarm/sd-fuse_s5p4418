@@ -21,8 +21,8 @@
 # base setup
 
 BASE_URL=http://112.124.9.243/dvdfiles
-OPT_URL=http://wiki.friendlyarm.com/NanoPi2/download
-BOARD=NanoPi2
+OPT_URL=http://wiki.friendlyarm.com/download
+BOARD=S5P4418/images-for-eflasher
 
 TARGET=${1,,}
 
