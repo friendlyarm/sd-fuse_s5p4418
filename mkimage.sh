@@ -31,7 +31,7 @@ true ${SOC:=s5p4418}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian | core-qte | rtmsystem | eflasher)
+debian | core-qte | kitkat | rtmsystem | eflasher)
 	;;
 *)
 	TARGET_OS=android ;;

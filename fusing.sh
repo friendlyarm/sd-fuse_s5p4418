@@ -79,7 +79,7 @@ fi
 true ${TARGET_OS:=${2,,}}
 
 case ${2,,} in
-debian | core-qte | rtmsystem | eflasher)
+debian | core-qte | kitkat | rtmsystem | eflasher)
 	PARTMAP=./${TARGET_OS}/partmap.txt
 	;;
 *)
@@ -173,6 +173,8 @@ if [ -f ./${TARGET_OS}/env.conf ]; then
 	${FW_SETENV} /dev/${DEV_NAME} -s ./${TARGET_OS}/env.conf
 elif [ -f ${BOOT_DIR}/${TARGET_OS}_env.conf ]; then
 	${FW_SETENV} /dev/${DEV_NAME} -s ${BOOT_DIR}/${TARGET_OS}_env.conf
+elif [ "${TARGET_OS}" = "kitkat" ]; then
+	${FW_SETENV} /dev/${DEV_NAME} -s ${BOOT_DIR}/android_env.conf
 else
 	${FW_SETENV} /dev/${DEV_NAME} -s ${BOOT_DIR}/generic_env.conf
 fi
@@ -192,13 +194,14 @@ if [ $? -ne 0 ]; then
 
 else
 	# optional: update uuid & label
-	if [ "x${TARGET_OS}" = "xandroid" ]; then
+	case ${TARGET_OS} in
+	android | kitkat)
 		sleep 1
-		${SD_TUNEFS} /dev/${DEV_NAME}
-	elif [ "x${TARGET_OS}" = "xdebian" ]; then
+		${SD_TUNEFS} /dev/${DEV_NAME};;
+	debian | core-qte)
 		sleep 1
-		resize2fs -f /dev/${DEV_PART}
-	fi
+		resize2fs -f /dev/${DEV_PART};;
+	esac
 fi
 
 echo "---------------------------------"
