@@ -79,7 +79,7 @@ fi
 true ${TARGET_OS:=${2,,}}
 
 case ${2,,} in
-debian | core-qte | kitkat | rtmsystem | eflasher)
+debian | debian-wifiap | core-qte* | kitkat | rtmsystem* | eflasher*)
 	PARTMAP=./${TARGET_OS}/partmap.txt
 	;;
 *)
@@ -136,19 +136,27 @@ BL3_POSITION=65
 # umount all at first
 umount /dev/${DEV_NAME}* > /dev/null 2>&1
 
-echo "---------------------------------"
-echo "2ndboot fusing"
-dd if=${BL2_BIN} of=/dev/${DEV_NAME} bs=512 seek=${BL2_POSITION}
+if [ -f ${BL2_BIN} -a ! -f ${TARGET_OS}/2ndboot.bin ]; then
+	echo "---------------------------------"
+	echo "2ndboot fusing"
+	dd if=${BL2_BIN} of=/dev/${DEV_NAME} bs=512 seek=${BL2_POSITION}
+	ddret=$?
+fi
 
-echo "---------------------------------"
-echo "bootloader fusing"
-dd if=${TBI_BIN} of=/dev/${DEV_NAME} bs=512 seek=${TBI_POSITION} count=1
-dd if=${BL3_BIN} of=/dev/${DEV_NAME} bs=512 seek=${BL3_POSITION}
+if [ -f ${BL3_BIN} -a ! -f ${TARGET_OS}/bootloader ]; then
+	echo "---------------------------------"
+	echo "bootloader fusing"
+	dd if=${TBI_BIN} of=/dev/${DEV_NAME} bs=512 seek=${TBI_POSITION} count=1
+	dd if=${BL3_BIN} of=/dev/${DEV_NAME} bs=512 seek=${BL3_POSITION}
+	ddret=$?
+fi
 
 #<Message Display>
-echo "---------------------------------"
-echo "Bootloader image is fused successfully."
-echo ""
+if [ "${ddret}" = "0" ]; then
+	echo "---------------------------------"
+	echo "Bootloader image is fused successfully."
+	echo ""
+fi
 
 # ----------------------------------------------------------
 # partition card & fusing filesystem
@@ -198,7 +206,7 @@ else
 	android | kitkat)
 		sleep 1
 		${SD_TUNEFS} /dev/${DEV_NAME};;
-	debian | core-qte)
+	debian | core-qte*)
 		sleep 1
 		resize2fs -f /dev/${DEV_PART};;
 	esac

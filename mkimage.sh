@@ -31,7 +31,7 @@ true ${SOC:=s5p4418}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian | core-qte | kitkat | rtmsystem | eflasher)
+debian | debian-wifiap | core-qte* | kitkat | rtmsystem* | eflasher*)
 	;;
 *)
 	TARGET_OS=android ;;
@@ -40,8 +40,17 @@ esac
 # ----------------------------------------------------------
 # Create zero file
 
-RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
-RAW_SIZE_MB=3900
+case ${TARGET_OS} in
+rtmsystem* | eflasher*)
+	RAW_FILE=${SOC}-${TARGET_OS}-sd8g-$(date +%Y%m%d).img
+	RAW_SIZE_MB=7800 ;;
+core-qte*)
+	RAW_FILE=${SOC}-ubuntu-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
+	RAW_SIZE_MB=3900 ;;
+*)
+	RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
+	RAW_SIZE_MB=3900 ;;
+esac
 
 BLOCK_SIZE=1024
 let RAW_SIZE=(${RAW_SIZE_MB}*1000*1000)/${BLOCK_SIZE}
@@ -90,7 +99,8 @@ true ${SD_FUSING:=./fusing.sh}
 ${SD_FUSING} ${LOOP_DEVICE} ${TARGET_OS}
 RET=$?
 
-if [ "x${TARGET_OS}" = "xeflasher" ]; then
+if [ "x${TARGET_OS}" = "xeflasher" -o \
+     "x${TARGET_OS}" = "xrtmsystem" ]; then
 	mkfs.vfat ${LOOP_DEVICE}p1 -n FriendlyARM
 fi
 
