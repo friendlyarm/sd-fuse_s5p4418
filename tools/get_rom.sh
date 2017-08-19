@@ -109,6 +109,6 @@ fi
 mkdir -p ${TARGET}
 
 if [ -f ${ROMFILE} ]; then
-	FA_DoExec tar xzvf ${ROMFILE} -C ${TARGET} || exit 1
+	FA_DoExec tar xzvf ${ROMFILE} -C ${TARGET} --strip-components=1 || exit 1
 fi
 
