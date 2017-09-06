@@ -1,7 +1,32 @@
 # sd-fuse_nanopi2
 Create bootable SD card for NanoPi2/NanoPi2 Fire/NanoPi M2/NanoPC T2/Smart4418
 
-# Build a package similar to s5p4418-eflasher-sd8g-yyyymmdd-full.img:
+
+## Build android bootable SD card
+```
+# git clone https://github.com/friendlyarm/sd-fuse_nanopi2.git
+# cd sd-fuse_nanopi2
+# sudo ./fusing.sh /dev/sde android
+```
+
+## Build an sd card image
+```
+# git clone https://github.com/friendlyarm/sd-fuse_nanopi2.git
+# cd sd-fuse_nanopi2
+# wget http://112.124.9.243/dvdfiles/S5P4418/images-for-eflasher/android-lollipop-images.tgz
+# tar xvzf android-lollipop-images.tgz
+```
+Now,  Change something under the android directory, 
+for example, replace the file you compiled, then build android bootable SD card: 
+```
+# sudo ./fusing.sh /dev/sde android
+```
+or build an sd card image:
+```
+# sudo ./mkimage.sh android
+```
+
+## Build a package similar to s5p4418-eflasher-sd8g-yyyymmdd-full.img:
 ```
 # git clone https://github.com/friendlyarm/sd-fuse_nanopi2.git
 # cd sd-fuse_nanopi2
@@ -17,9 +42,4 @@ Create bootable SD card for NanoPi2/NanoPi2 Fire/NanoPi M2/NanoPC T2/Smart4418
 # losetup -d ${DEV}
 ```
 
-# Build android bootable SD card
-```
-# git clone https://github.com/friendlyarm/sd-fuse_nanopi2.git
-# cd sd-fuse_nanopi2
-# sudo ./mkimage.sh android /dev/sde
-```
+
