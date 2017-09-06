@@ -1,5 +1,5 @@
 # sd-fuse_nanopi2
-Create bootable SD card for NanoPi2/NanoPi2 Fire/NanoPi M2/NanoPC T2/Smart4418
+Create bootable SD card for NanoPi2/NanoPi S2/NanoPi2 Fire/NanoPi M2/NanoPC T2/Smart4418
 
 
 ## Build android bootable SD card
