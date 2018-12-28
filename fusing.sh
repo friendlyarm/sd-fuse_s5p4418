@@ -28,12 +28,12 @@ fi
 # Checking device for fusing
 
 if [ -z $1 ]; then
-	echo "Usage: $0 DEVICE [core-qte|lubuntu]"
+	echo "Usage: $0 DEVICE [friendlycore|lubuntu]"
 	exit 0
 fi
 
 case $1 in
-/dev/sd[a-z] | /dev/loop[0-9] | /dev/mmcblk1)
+/dev/sd[a-z] | /dev/loop[0-9]* | /dev/mmcblk1)
 	if [ ! -e $1 ]; then
 		echo "Error: $1 does not exist."
 		exit 1
@@ -43,7 +43,7 @@ case $1 in
 /dev/sd[a-z])
 	DEV_PART=${DEV_NAME}2
 	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
-/dev/mmcblk1 | /dev/loop[0-9])
+/dev/mmcblk1 | /dev/loop[0-9]*)
 	DEV_PART=${DEV_NAME}p2
 	REMOVABLE=1 ;;
 *)
@@ -67,9 +67,9 @@ if [ ${DEV_SIZE} -gt 64000000 ]; then
 	exit 1
 fi
 
-if [ ${DEV_SIZE} -le 3800000 ]; then
+if [ ${DEV_SIZE} -le 7000000 ]; then
 	echo "Error: $1 size (${DEV_SIZE} KB) is too small"
-	echo "       At least 4GB SDHC card is required, please try another card."
+	echo "       At least 8GB SDHC card is required, please try another card."
 	exit 1
 fi
 
@@ -79,7 +79,7 @@ fi
 true ${TARGET_OS:=${2,,}}
 
 case ${2,,} in
-core-qte* | lubuntu* | kitkat | eflasher)
+friendlycore* | lubuntu* | kitkat | eflasher)
 	PARTMAP=./${TARGET_OS}/partmap.txt
 	;;
 *)
@@ -196,8 +196,9 @@ else
 	android | kitkat)
 		sleep 1
 		${SD_TUNEFS} /dev/${DEV_NAME};;
-	core-qte* | lubuntu*)
+	friendlycore* | lubuntu*)
 		sleep 1
+        echo "### try to resize2fs: /dev/${DEV_PART}"
 		resize2fs -f /dev/${DEV_PART};;
 	esac
 fi

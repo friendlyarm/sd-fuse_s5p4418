@@ -31,7 +31,7 @@ true ${SOC:=s5p4418}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-core-qte* | lubuntu* | kitkat | eflasher)
+friendlycore* | lubuntu* | kitkat | eflasher)
 	;;
 *)
 	TARGET_OS=android ;;
@@ -41,9 +41,9 @@ esac
 # Create zero file
 
 case ${TARGET_OS} in
-core-qte)
+friendlycore)
 	RAW_FILE=${SOC}-friendly-core-xenial-4.4-armhf-$(date +%Y%m%d).img
-	RAW_SIZE_MB=3900 ;;
+	RAW_SIZE_MB=7800 ;;
 lubuntu)
 	RAW_FILE=${SOC}-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
 	RAW_SIZE_MB=7800 ;;
@@ -58,7 +58,7 @@ eflasher)
 	RAW_SIZE_MB=7800 ;;
 *)
 	RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
-	RAW_SIZE_MB=3800 ;;
+	RAW_SIZE_MB=7800 ;;
 esac
 
 BLOCK_SIZE=1024
@@ -109,7 +109,7 @@ ${SD_FUSING} ${LOOP_DEVICE} ${TARGET_OS}
 RET=$?
 
 if [ "x${TARGET_OS}" = "xeflasher" ]; then
-	mkfs.vfat ${LOOP_DEVICE}p1 -n FriendlyARM
+	mkfs.exfat ${LOOP_DEVICE}p1 -n FriendlyARM
 fi
 
 # cleanup
