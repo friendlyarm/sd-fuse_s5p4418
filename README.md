@@ -52,7 +52,7 @@ s5p4418-friendly-core-xenial-4.4-armhf-$(date +%Y%m%d).img
 ```
 You can use dd to burn this file into an sd card:
 ```
-dd if=s5p4418-friendly-core-xenial-4.4-armhf-20181227.img of=/dev/sdX bs=1M
+dd if=s5p4418-friendly-core-xenial-4.4-armhf-$(date +%Y%m%d).img of=/dev/sdX bs=1M
 ```
 
 ## Build a package similar to s5p4418-eflasher-friendlycore-xenial-4.4-armhf-YYYYMMDD.img
@@ -112,6 +112,7 @@ touch .scmversion
 export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin:$PATH
 make ARCH=arm nanopi2_linux_defconfig
 make ARCH=arm
+
 # lubuntu
 simg2img ../lubuntu/boot.img ../lubuntu/r.img
 mkdir -p /mnt/lubuntu-boot
