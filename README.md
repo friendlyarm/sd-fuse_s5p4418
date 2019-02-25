@@ -119,6 +119,7 @@ mkdir -p /mnt/lubuntu-boot
 mount -t ext4 -o loop ../lubuntu/r.img /mnt/lubuntu-boot
 cp arch/arm/boot/zImage /mnt/lubuntu-boot
 cp arch/arm/boot/dts/s5p4418-nanopi2-rev*.dtb /mnt/lubuntu-boot
+../tools/make_ext4fs -s -l 67108864 -a root -L boot ../lubuntu/boot.img /mnt/lubuntu-boot
 umount /mnt/lubuntu-boot
 rm ../lubuntu/r.img
 
@@ -128,6 +129,7 @@ mkdir -p /mnt/friendlycore-boot
 mount -t ext4 -o loop ../friendlycore/r.img /mnt/friendlycore-boot
 cp arch/arm/boot/zImage /mnt/friendlycore-boot
 cp arch/arm/boot/dts/s5p4418-nanopi2-rev*.dtb /mnt/friendlycore-boot
+../tools/make_ext4fs -s -l 67108864 -a root -L boot ../friendlycore/boot.img /mnt/friendlycore-boot
 umount /mnt/friendlycore-boot
 rm ../friendlycore/r.img
 ```
