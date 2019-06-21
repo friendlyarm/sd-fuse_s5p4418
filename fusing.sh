@@ -77,14 +77,14 @@ fi
 # Get target OS
 
 true ${TARGET_OS:=${2,,}}
+PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${2,,} in
 friendlycore* | lubuntu* | kitkat | eflasher)
-	PARTMAP=./${TARGET_OS}/partmap.txt
 	;;
 *)
 	TARGET_OS=android
-	PARTMAP=./${TARGET_OS}/partmap.txt
+	
 	if [ ! -z ${ANDROID_PRODUCT_OUT} ]; then
 		PARTMAP=${ANDROID_PRODUCT_OUT}/partmap.txt
 	fi

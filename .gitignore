@@ -6,6 +6,7 @@
 # Normal rules
 #
 
+/out
 *.rej
 *.orig
 *.patch

@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# set -eu
+
+# ----------------------------------------------------------
+# base setup
+
+TOPPATH=$PWD
+
+EFLASHER_RAW_IMG=$1
+SOC=$2
+TARGET_OS=$3
+
+OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
+
+
+[ -z ${EFLASHER_RAW_IMG} -o -z ${SOC} -o -z ${TARGET_OS} ] && {
+        echo "Usage: $0 <image name> <plat>"
+        exit 1
+}
+
+[ -f ${EFLASHER_RAW_IMG} ] || {
+	echo "Error: ${EFLASHER_RAW_IMG} not found"
+	exit 1
+}
+
+[ -f ${TOPPATH}/mk-emmc-image.sh ] || {
+	echo "Error: please run on root path"
+	exit 1
+}
+
+[ -d ${OS_IMAGES_DIR} ] || {
+        echo "Error: not found ${OS_IMAGES_DIR}"
+        exit 1
+}
+
+case ${TARGET_OS} in
+buildroot)
+        RAW_FILE=${SOC}-eflasher-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img ;;
+debian)
+	RAW_FILE=${SOC}-eflasher-debian9-4.4-armhf-$(date +%Y%m%d).img ;;
+android7)
+        RAW_FILE=${SOC}-eflasher-android7-$(date +%Y%m%d).img ;;
+android8)
+        RAW_FILE=${SOC}-eflasher-android8-$(date +%Y%m%d).img ;;
+friendlycore-arm64)
+        RAW_FILE=${SOC}-eflasher-friendlycore-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
+friendlydesktop-arm64)
+        RAW_FILE=${SOC}-eflasher-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
+lubuntu)
+        RAW_FILE=${SOC}-eflasher-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img ;;
+eflasher)
+        RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img ;;
+*)
+        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
+esac
+
+gen_eflasher_conf()
+{
+cat << 'EOL' > ${1}/eflasher.conf
+[General]
+screenSizePercent=auto
+autoExit=false
+autoStart=
+autoRestore=
+additionalImagePath=
+additionalBackupPath=
+EOL
+}
+
+FULLIMG=out/${RAW_FILE}
+
+# ----------------------------------------------------------
+cp ${EFLASHER_RAW_IMG} ${FULLIMG}
+DEV=`losetup -f`
+MNT=/tmp/media_exfat
+rm -rf ${MNT}
+if [ $? -eq 0 ]; then
+        echo ""
+else
+        umount ${MNT}
+        rm -rf ${MNT}
+fi
+# ----------------------------------------------------------
+losetup ${DEV} ${FULLIMG}
+partprobe ${DEV}
+mkdir -p ${MNT}
+mount -t exfat ${DEV}p1 ${MNT}
+gen_eflasher_conf ${MNT}
+mkdir -p ${MNT}/${TARGET_OS}
+rm -rf ${MNT}/${TARGET_OS}/*
+echo "copying ${OS_IMAGES_DIR}/* to ${MNT}/${TARGET_OS} ..."
+(cd ${OS_IMAGES_DIR} && find . -maxdepth 1 -type f -exec cp {} ${MNT}/${TARGET_OS} \;)
+umount ${MNT}
+losetup -d ${DEV}
+ls -l ${FULLIMG}
+exit 0

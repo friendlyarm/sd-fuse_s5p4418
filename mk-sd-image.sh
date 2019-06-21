@@ -24,6 +24,15 @@ if [ $(id -u) -ne 0 ]; then
 	exit
 fi
 
+function usage() {
+       echo "Usage: $0 <friendlycore|lubuntu|android|kitkat|eflasher>"
+       exit 0
+}
+
+if [ -z $1 ]; then
+    usage
+fi
+
 # ----------------------------------------------------------
 # Get platform, target OS
 
@@ -31,10 +40,11 @@ true ${SOC:=s5p4418}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | kitkat | eflasher)
+friendlycore* | lubuntu* | android | kitkat | eflasher)
 	;;
 *)
-	TARGET_OS=android ;;
+	echo "Error: Unsupported target OS: ${TARGET_OS}"
+	exit 0
 esac
 
 # ----------------------------------------------------------
@@ -61,13 +71,21 @@ eflasher)
 	RAW_SIZE_MB=7800 ;;
 esac
 
+OUT=out
+if [ ! -d $OUT ]; then
+	echo "path not found: $PWD/$OUT"
+	exit 1
+fi
+RAW_FILE=${OUT}/${RAW_FILE}
+
 BLOCK_SIZE=1024
 let RAW_SIZE=(${RAW_SIZE_MB}*1000*1000)/${BLOCK_SIZE}
 
 echo "Creating RAW image: ${RAW_FILE} (${RAW_SIZE_MB} MB)"
 echo "---------------------------------"
 
-if [ -f ${RAW_FILE} ]; then
+
+if [ -f "${RAW_FILE}" ]; then
 	rm -f ${RAW_FILE}
 fi
 
@@ -103,7 +121,7 @@ fi
 # ----------------------------------------------------------
 # Fusing all
 
-true ${SD_FUSING:=./fusing.sh}
+true ${SD_FUSING:=$(dirname $0)/fusing.sh}
 
 ${SD_FUSING} ${LOOP_DEVICE} ${TARGET_OS}
 RET=$?
