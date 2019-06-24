@@ -92,9 +92,17 @@ friendlycore* | lubuntu* | kitkat | eflasher)
 esac
 
 if [[ ! -z $2 && ! -f ${PARTMAP} ]]; then
-	echo -n "Warn: Image not found for ${TARGET_OS^}, download now (Y/N)? "
-
-	while read -r -n 1 -t 10 -s USER_REPLY; do
+	cat << EOF
+Warn: Image not found for ${TARGET_OS^}
+----------------
+you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
+the image files are stored in a directory called images-for-eflasher, for example:
+    tar xvzf ../NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
+    sudo ./fusing.sh /dev/sdX friendlycore-arm64
+----------------
+Or, download from http (Y/N)?
+EOF
+	while read -r -n 1 -t 3600 -s USER_REPLY; do
 		if [[ ${USER_REPLY} = [Nn] ]]; then
 			echo ${USER_REPLY}
 			exit 1

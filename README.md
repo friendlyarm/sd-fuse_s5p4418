@@ -68,6 +68,14 @@ wget http://112.124.9.243/dvdfiles/S5P4418/images-for-eflasher/emmc-flasher-imag
 tar xzf emmc-flasher-images.tgz
 sudo ./mk-emmc-image.sh friendlycore
 ```
+The following file will be generated:  
+```
+out/s5p4418-eflasher-friendlycore-bionic-4.4-yyyymmdd.img
+```
+You can use dd to burn this file into an sd card:
+```
+dd if=out/out/s5p4418-eflasher-friendlycore-bionic-4.4-yyyymmdd.img of=/dev/sdX bs=1M
+```
 
 ## Replace the file you compiled
 
@@ -96,7 +104,7 @@ tar xzf friendlycore-images.tgz
 Build kernel:
 ```
 cd sd-fuse_s5p4418
-git clone https://github.com/friendlyarm/linux.git -b nanopi2-v4.4.y --depth 1
+git clone https://github.com/friendlyarm/linux.git -b nanopi2-v4.4.y --depth 1 out/kernel-s5p4418
 
 # lubuntu
 ./build-kernel.sh lubuntu
@@ -131,7 +139,7 @@ echo hello > friendlycore/rootfs/root/welcome.txt
 ```
 Remake rootfs.img:
 ```
-./build-rootfs.sh friendlycore/rootfs friendlycore/rootfs.img
+./build-rootfs-img.sh friendlycore/rootfs friendlycore/rootfs.img
 ```
 Make sdboot image:
 ```

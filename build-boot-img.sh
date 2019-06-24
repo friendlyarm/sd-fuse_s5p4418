@@ -4,7 +4,7 @@ if [ $# -lt 2 ]; then
 	echo "Usage: $0 <boot dir> <img filename>"
     echo "example:"
     echo "    tar xvzf NETDISK/S5P4418/rootfs/rootfs-friendlycore-20190603.tgz"
-    echo "    ./build-bootimg.sh friendlycore/boot friendlycore/boot.img"
+    echo "    ./build-boot-img.sh friendlycore/boot friendlycore/boot.img"
 	exit 0
 fi
 

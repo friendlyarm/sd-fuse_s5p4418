@@ -58,11 +58,13 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 function usage() {
        echo "Usage: $0 <friendlycore|lubuntu>"
        echo "# example:"
+       echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${OUT}/${KERNEL_DIRNAME}"
-       echo "# or"
-       echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b nanopi2-v4.4.y /opt/FriendlyARM/sd-fuse_s5p4418/out/kernel-s5p4418"
+       echo "# or clone your local repo:"
+       echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} out/kernel-${SOC}"
        echo "# then"
        echo "    ./build-kernel.sh friendlycore"
+       echo "    ./mk-emmc-image.sh friendlycore"
        exit 0
 }
 
@@ -85,7 +87,16 @@ esac
 
 download_img() {
     if [ ! -f ${PARTMAP} ]; then
-        echo -n "Warn: Image not found for ${1}, download now (Y/N)? "
+        cat << EOF
+Warn: Image not found for ${1}
+----------------
+you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
+the image files are stored in a directory called images-for-eflasher, for example:
+    tar xvzf ../NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
+    sudo ./fusing.sh /dev/sdX friendlycore-arm64
+----------------
+Or, download from http (Y/N)?
+EOF
         while read -r -n 1 -t 3600 -s USER_REPLY; do
             if [[ ${USER_REPLY} = [Nn] ]]; then
                 echo ${USER_REPLY}
@@ -123,14 +134,6 @@ rm -rf ${KERNEL_BUILD_DIR}
 echo "coping kernel src..."
 rsync -a --exclude='.git/' ${OUT}/${KERNEL_DIRNAME}/* ${KERNEL_BUILD_DIR}
 
-if [ ! -d /opt/FriendlyARM/toolchain/6.4-aarch64 ]; then
-	echo "please install aarch64-gcc-6.4 first, using these commands: "
-	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git"
-	echo "\tsudo mkdir -p /opt/FriendlyARM/toolchain"
-	echo "\tsudo tar xf prebuilts/gcc-x64/aarch64-cortexa53-linux-gnu-6.4.tar.xz -C /opt/FriendlyARM/toolchain/"
-	exit 1
-fi
-
 if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
 	echo "please install arm-linux-gcc 4.9.3 first, using these commands: "
 	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git"
@@ -138,7 +141,7 @@ if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
 	echo "\tsudo tar xf prebuilts/gcc-x64/arm-cortexa9-linux-gnueabihf-4.9.3.tar.xz -C /opt/FriendlyARM/toolchain/"
 	exit 1
 fi
-export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin/:/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
+export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin/:$PATH
 
 cd ${KERNEL_BUILD_DIR}
 make distclean
@@ -187,7 +190,7 @@ if [ -f ${TARGET_OS}/boot.img ]; then
     cp ${KERNEL_BUILD_DIR}/${KIMG} ${OUT}/boot/
     cp -avf ${KERNEL_BUILD_DIR}/${KDTB} ${OUT}/boot/
 
-    ./build-bootimg.sh ${OUT}/boot ${TARGET_OS}/boot.img
+    ./build-boot-img.sh ${OUT}/boot ${TARGET_OS}/boot.img
     if [ $? -eq 0 ]; then
         echo "update ${KIMG} to boot.img ok."
         exit 0
@@ -216,7 +219,7 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     rm -rf ${OUT}/rootfs/lib/modules/*
     cp -af ${KMODULES_OUTDIR}/lib/modules/* ${OUT}/rootfs/lib/modules/
 
-    ./build-rootfs.sh ${OUT}/rootfs ${TARGET_OS}/rootfs.img
+    ./build-rootfs-img.sh ${OUT}/rootfs ${TARGET_OS}/rootfs.img
     if [ $? -eq 0 ]; then
         echo "update kernel-modules to rootfs.img ok."
         exit 0
