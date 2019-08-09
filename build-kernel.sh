@@ -43,7 +43,7 @@ CROSS_COMPILER=arm-linux-
 if [ $(id -u) -ne 0 ]; then
 	echo "Re-running script under sudo..."
 	sudo "$0" "$@"
-	exit
+	exit 0
 fi
 
 
@@ -82,7 +82,7 @@ friendlycore* | lubuntu* | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
-        exit 0
+        exit 1
 esac
 
 download_img() {
@@ -193,7 +193,6 @@ if [ -f ${TARGET_OS}/boot.img ]; then
     ./build-boot-img.sh ${OUT}/boot ${TARGET_OS}/boot.img
     if [ $? -eq 0 ]; then
         echo "update ${KIMG} to boot.img ok."
-        exit 0
     else
         echo "fail."
         exit 1
@@ -222,7 +221,6 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     ./build-rootfs-img.sh ${OUT}/rootfs ${TARGET_OS}/rootfs.img
     if [ $? -eq 0 ]; then
         echo "update kernel-modules to rootfs.img ok."
-        exit 0
     else
         echo "fail."
         exit 1
@@ -232,4 +230,4 @@ else
 	exit 1
 fi
 
-
+exit 0
