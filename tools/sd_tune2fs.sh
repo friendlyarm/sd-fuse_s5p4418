@@ -45,7 +45,7 @@ case $1 in
 esac
 
 if [ ${REMOVABLE} -le 0 ]; then
-	echo "Error: $1 is non-removable device. Stop."
+	echo "Error: $1 is a non-removable device. Stop."
 	exit 1
 fi
 

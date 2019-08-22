@@ -4,4 +4,5 @@ flash=mmc,0:fip-secure:boot:0x40200,0x180000:bl_mon.img;
 flash=mmc,0:fip-nonsecure:boot:0x1E0200,0x100000:bootloader.img;
 flash=mmc,0:env:env:0x2E0200,0x4000;
 flash=mmc,0:boot:ext4:0x400000,0x4000000:boot.img;
-flash=mmc,0:rootfs:ext4:0x4400000,0:rootfs.img;
+flash=mmc,0:rootfs:ext4:0x4400000,0x96000000:rootfs.img;
+flash=mmc,0:userdata:ext4:0x9A400000,0x0:userdata.img;

@@ -17,19 +17,12 @@
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-	echo "Re-running script under sudo..."
-	sudo "$0" "$@"
-	exit
-fi
-
 function usage() {
        echo "Usage: $0 <friendlycore|lubuntu|android|kitkat>"
        exit 0
 }
 
-if [ -z $1 ]; then
+if [ $# -eq 0 ]; then
     usage
 fi
 
@@ -40,7 +33,7 @@ true ${SOC:=s5p4418}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | android | kitkat)
+friendlycore* | lubuntu* | android | kitkat | friendlywrt)
 	;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -80,6 +73,13 @@ EOF
 
 download_img ${TARGET_OS}
 download_img eflasher
+
+# Automatically re-run script under sudo if not root
+if [ $(id -u) -ne 0 ]; then
+	echo "Re-running script under sudo..."
+	sudo "$0" "$@"
+	exit
+fi
 
 ./mk-sd-image.sh eflasher && \
 	./tools/fill_img_to_eflasher out/${SOC}-eflasher-$(date +%Y%m%d).img ${SOC} $@ && { 

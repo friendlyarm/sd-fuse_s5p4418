@@ -32,6 +32,7 @@
 /debian*-images.tgz*
 /emmc-flasher-images.tgz*
 /lubuntu-desktop-images.tgz*
+/friendlywrt*
 /*.raw*
 
 #

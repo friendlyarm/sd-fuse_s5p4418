@@ -21,24 +21,12 @@ set -eu
 true ${SOC:=s5p4418}
 true ${DISABLE_MKIMG:=0}
 
-KERNEL_REPO=https://github.com/friendlyarm/linux
-KERNEL_BRANCH=nanopi2-v4.4.y
+UBOOT_REPO=https://github.com/friendlyarm/u-boot
+UBOOT_BRANCH=nanopi2-v2016.01
 
 ARCH=arm
-KCFG=nanopi2_linux_defconfig
-KIMG=arch/${ARCH}/boot/zImage
-KDTB=arch/${ARCH}/boot/dts/s5p4418-nanopi2-*.dtb
-KALL=
+UCFG=s5p4418_nanopi2_defconfig
 CROSS_COMPILER=arm-linux-
-
-# 
-# kernel logo:
-# 
-# convert logo.jpg -type truecolor /tmp/logo.bmp 
-# convert logo.jpg -type truecolor /tmp/logo_kernel.bmp
-# LOGO=/tmp/logo.bmp
-# KERNEL_LOGO=/tmp/logo_kernel.bmp
-#
 
 TOPPATH=$PWD
 OUT=$TOPPATH/out
@@ -46,21 +34,25 @@ if [ ! -d $OUT ]; then
 	echo "path not found: $OUT"
 	exit 1
 fi
-KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
-true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
+
+true ${UBOOT_SRC:=${OUT}/uboot-${SOC}}
+echo "uboot src: ${UBOOT_SRC}"
+
+# You need to install:
+# apt-get install swig python-dev python3-dev
 
 function usage() {
-       echo "Usage: $0 <friendlycore|lubuntu|friendlywrt|eflasher>"
+       echo "Usage: $0 <friendlycore|friendlywrt>"
        echo "# example:"
-       echo "# clone kernel source from github:"
-       echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
+       echo "# clone uboot source from github:"
+       echo "    git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
        echo "# or clone your local repo:"
-       echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} out/kernel-${SOC}"
+       echo "    git clone git@192.168.1.2:/path/to/uboot.git --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
        echo "# then"
-       echo "    ./build-kernel.sh friendlycore"
-       echo "    ./mk-emmc-image.sh friendlycore"
+       echo "    ./build-uboot.sh friendlycore "
+       echo "    ./mk-emmc-image.sh friendlycore "
        echo "# also can do:"
-       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore"
+       echo "	UBOOT_SRC=~/myuboot ./build-uboot.sh friendlycore"
        exit 0
 }
 
@@ -74,21 +66,28 @@ true ${TARGET_OS:=${1,,}}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | friendlywrt | eflasher)
+friendlycore | friendlywrt | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
-        exit 1
+        exit 0
 esac
+
+# Automatically re-run script under sudo if not root
+# if [ $(id -u) -ne 0 ]; then
+# 	echo "Re-running script under sudo..."
+# 	sudo UBOOT_SRC=${UBOOT_SRC} DISABLE_MKIMG=${DISABLE_MKIMG} "$0" "$@"
+# 	exit
+# fi
 
 download_img() {
     if [ ! -f ${PARTMAP} ]; then
         cat << EOF
-Warn: Image not found for ${1}
+Warn: Image not found for "${1}"
 ----------------
 you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
 the image files are stored in a directory called images-for-eflasher, for example:
-    tar xvzf ../NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
+    tar xvzf ../NETDISK/images-for-eflasher/friendlycore-xenial_4.14_armhf.tgz
     sudo ./fusing.sh /dev/sdX friendlycore-arm64
 ----------------
 Or, download from http (Y/N)?
@@ -107,16 +106,16 @@ EOF
             echo "Cancelled."
             exit 1
         fi
-        ./tools/get_rom.sh ${1} || exit 1
+        ./tools/get_rom.sh "${1}" || exit 1
     fi
 }
 
-if [ ! -d ${KERNEL_SRC} ]; then
-	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}
+if [ ! -d ${UBOOT_SRC} ]; then
+	git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}
 fi
 
 if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
-	echo "please install arm-linux-gcc 4.9.3 first, using these commands: "
+	echo "please install arm-linux-gcc 4.9.3 first by running these commands: "
 	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git"
 	echo "\tsudo mkdir -p /opt/FriendlyARM/toolchain"
 	echo "\tsudo tar xf prebuilts/gcc-x64/arm-cortexa9-linux-gnueabihf-4.9.3.tar.xz -C /opt/FriendlyARM/toolchain/"
@@ -124,42 +123,27 @@ if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
 fi
 export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin/:$PATH
 
-cd ${KERNEL_SRC}
-make distclean
-touch .scmversion
-make ARCH=${ARCH} ${KCFG}
-if [ $? -ne 0 ]; then
-	echo "failed to build kernel."
-	exit 1
-fi
-if [ x"${TARGET_OS}" = x"eflasher" ]; then
-    cp -avf .config .config.old
-    sed -i "s/.*\(PROT_MT_SYNC\).*/CONFIG_TOUCHSCREEN_\1=y/g" .config
-    sed -i "s/\(.*PROT_MT_SLOT\).*/# \1 is not set/g" .config
+if ! [ -x "$(command -v simg2img)" ]; then
+    sudo apt install android-tools-fsutils
 fi
 
-make ARCH=${ARCH} ${KALL} -j$(nproc)
-if [ $? -ne 0 ]; then
-        echo "failed to build kernel."
-        exit 1
+if ! [ -x "$(command -v swig)" ]; then
+    sudo apt install swig
 fi
 
-rm -rf ${KMODULES_OUTDIR}
-mkdir -p ${KMODULES_OUTDIR}
-make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules -j$(nproc)
-if [ $? -ne 0 ]; then
-	echo "failed to build kernel modules."
-        exit 1
-fi
-make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules_install
-if [ $? -ne 0 ]; then
-	echo "failed to build kernel modules."
-        exit 1
-fi
-(cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILER}strip --strip-unneeded)
+# get include path for this python version
+INCLUDE_PY=$(python -c "from distutils import sysconfig as s; print s.get_config_vars()['INCLUDEPY']")
+if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
+    sudo apt install python-dev python3-dev
+fi  
 
-if [ ! -d ${KMODULES_OUTDIR}/lib ]; then
-	echo "not found kernel modules."
+cd ${UBOOT_SRC}
+make clean
+make ${UCFG} ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILER}
+make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILER} -j$(nproc)
+
+if [ $? -ne 0 ]; then
+	echo "failed to build uboot."
 	exit 1
 fi
 
@@ -167,20 +151,15 @@ if [ x"$DISABLE_MKIMG" = x"1" ]; then
     exit 0
 fi
 
-echo "building kernel ok."
-if ! [ -x "$(command -v simg2img)" ]; then
-    sudo apt update
-    sudo apt install android-tools-fsutils
-fi
-
+echo "building uboot ok."
 cd ${TOPPATH}
 download_img ${TARGET_OS}
-./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TOPPATH}/${TARGET_OS} ${TOPPATH}/prebuilt
-
-
+./tools/update_uboot_bin.sh ${OUT} ${UBOOT_SRC} ${TOPPATH}/${TARGET_OS}
 if [ $? -eq 0 ]; then
-    echo "updating kernel ok."
+    echo "updating ${TARGET_OS}/bootloader.img ok."
 else
     echo "failed."
     exit 1
 fi
+
+exit 0
