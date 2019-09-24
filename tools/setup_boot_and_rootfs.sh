@@ -6,13 +6,6 @@ set -eu
 	exit 1
 }
 
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-        echo "Re-running script under sudo..."
-        sudo "$0" "$@"
-        exit
-fi
-
 true ${SOC:=s5p4418}
 ARCH=arm
 KIMG=arch/${ARCH}/boot/zImage
@@ -33,6 +26,7 @@ rsync -a --no-o --no-g ${KERNEL_DIR}/${KDTB} ${BOOT_DIR}
 rsync -a --no-o --no-g ${PREBUILT}/boot/* ${BOOT_DIR}
 
 # rootfs
+rm -rf ${ROOTFS_DIR}/lib/modules/*
 cp -af ${KMODULES_OUTDIR}/* ${ROOTFS_DIR}
 
 

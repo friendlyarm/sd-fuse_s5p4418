@@ -13,10 +13,10 @@ if [ $(id -u) -ne 0 ]; then
         exit
 fi
 
-if [ $# -ne 3 ]; then
-	echo "number of args must be 3"
+if [ $# -ne 2 ]; then
+	echo "number of args must be 2"
 	exit 1
 fi
 
-cp -af $2/bootloader.img $3
+cp -af $1/bootloader.img $2
 exit $?
