@@ -8,6 +8,9 @@ set -eu
 
 # use partmap.txt, partmap_sd.txt only for fastboot
 cp -f $2/partmap.txt $1/
+cp -f $2/bl1-mmcboot.bin $1/
+cp -f $2/loader-mmc.img $1/
+cp -f $2/bl_mon.img $1
 
 USERDATA_SIZE=104857600
 echo "Generating empty userdata.img (size:${USERDATA_SIZE})"

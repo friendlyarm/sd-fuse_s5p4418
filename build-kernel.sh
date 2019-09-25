@@ -55,7 +55,7 @@ function usage() {
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# or clone your local repo:"
-       echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} out/kernel-${SOC}"
+       echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# then"
        echo "    ./build-kernel.sh friendlycore"
        echo "    ./mk-emmc-image.sh friendlycore"
@@ -89,7 +89,7 @@ Warn: Image not found for ${1}
 you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
 the image files are stored in a directory called images-for-eflasher, for example:
     tar xvzf ../NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
-    sudo ./fusing.sh /dev/sdX friendlycore-arm64
+    sudo ./fusing.sh /dev/sdX ${1}
 ----------------
 Or, download from http (Y/N)?
 EOF
