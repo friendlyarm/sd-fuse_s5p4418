@@ -73,7 +73,7 @@ true ${TARGET_OS:=${2,,}}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | friendlywrt | kitkat | android | eflasher)
+friendlycore* | lubuntu* | friendlywrt | kitkat | android | android7 | eflasher)
 	;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -197,7 +197,7 @@ if [ $? -ne 0 ]; then
 else
 	# optional: update uuid & label
 	case ${TARGET_OS} in
-	android | kitkat)
+	android | android7 | kitkat)
 		sleep 1
 		${SD_TUNEFS} /dev/${DEV_NAME};;
 	friendlycore* | lubuntu* | friendlywrt*)

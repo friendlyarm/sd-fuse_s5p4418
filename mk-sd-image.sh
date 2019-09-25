@@ -19,7 +19,7 @@ set -eu
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlycore|lubuntu|android|kitkat|friendlywrt|eflasher>"
+       echo "Usage: $0 <friendlycore|lubuntu|android|android7|kitkat|friendlywrt|eflasher>"
        exit 0
 }
 
@@ -34,7 +34,7 @@ true ${SOC:=s5p4418}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | android | kitkat | friendlywrt | eflasher)
+friendlycore* | lubuntu* | android | android7 | kitkat | friendlywrt | eflasher)
 	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -70,6 +70,9 @@ else
 		RAW_SIZE_MB=7800 ;;
 	android)
 		RAW_FILE=${SOC}-android-lollipop-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	android7)
+		RAW_FILE=${SOC}-android7-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	kitkat)
 		RAW_FILE=${SOC}-android-kitkat-$(date +%Y%m%d).img

@@ -30,6 +30,8 @@ TARGET_OS=${1,,}
 case ${TARGET_OS} in
 android)
 	ROMFILE=android-lollipop-images.tgz;;
+android7)
+	ROMFILE=android-nougat-images.tgz;;
 kitkat)
 	ROMFILE=android-kitkat-images.tgz;;
 friendlywrt)

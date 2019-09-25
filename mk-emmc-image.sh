@@ -18,7 +18,7 @@
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlycore|lubuntu|android|kitkat>"
+       echo "Usage: $0 <friendlycore|lubuntu|android|android7|kitkat>"
        exit 0
 }
 
@@ -33,7 +33,7 @@ true ${SOC:=s5p4418}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | android | kitkat | friendlywrt)
+friendlycore* | lubuntu* | android | android7 | kitkat | friendlywrt)
 	;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

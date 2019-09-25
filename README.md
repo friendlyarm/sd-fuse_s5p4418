@@ -18,7 +18,7 @@ git clone https://github.com/friendlyarm/sd-fuse_s5p4418.git
 cd sd-fuse_s5p4418
 sudo ./fusing.sh /dev/sdX friendlycore
 ```
-You can build the following OS: friendlycore, lubuntu, eflasher, android, kitkat.  
+You can build the following OS: friendlycore, lubuntu, eflasher, android7, android, kitkat.  
 
 Notes:  
 fusing.sh will check the local directory for a directory with the same name as OS, if it does not exist fusing.sh will go to download it from network.  
