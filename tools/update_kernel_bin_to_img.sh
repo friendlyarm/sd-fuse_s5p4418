@@ -13,9 +13,12 @@ if [ $(id -u) -ne 0 ]; then
         exit
 fi
 
+TOP=$PWD
+true ${MKFS:="${TOP}/tools/make_ext4fs"}
+true ${MKFS:="${TOP}/tools/make_ext4fs"}
 true ${SOC:=s5p4418}
 ARCH=arm
-KCFG=sunxi_defconfig
+KCFG=nanopi2_linux_defconfig
 KIMG=arch/${ARCH}/boot/zImage
 KDTB=arch/${ARCH}/boot/dts/s5p4418-nanopi2-*.dtb
 KALL="zImage dtbs"
@@ -62,24 +65,54 @@ fi
 if [ -f ${TARGET_OS}/rootfs.img ]; then
     echo "copying kernel module and firmware to rootfs ..."
 
+    # Extract rootfs from img
     simg2img ${TARGET_OS}/rootfs.img ${TARGET_OS}/r.img
-    mkdir -p ${OUT}/old_rootfs
-    mount -t ext4 -o loop ${TARGET_OS}/r.img ${OUT}/old_rootfs
-    mkdir -p ${OUT}/rootfs
-    rm -rf ${OUT}/rootfs/*
-    cp -af ${OUT}/old_rootfs/* ${OUT}/rootfs
-    umount ${OUT}/old_rootfs
-    rm ${TARGET_OS}/r.img
-    rm -rf ${OUT}/old_rootfs
-
-    cp -af ${KMODULES_OUTDIR}/lib/firmware/* ${OUT}/rootfs/lib/firmware/
-    rm -rf ${OUT}/rootfs/lib/modules/*
-    cp -af ${KMODULES_OUTDIR}/lib/modules/* ${OUT}/rootfs/lib/modules/
-
-    ./build-rootfs-img.sh ${OUT}/rootfs ${TARGET_OS}/rootfs.img
+    mkdir -p ${OUT}/rootfs_mnt
+    mkdir -p ${OUT}/rootfs_new
+    mount -t ext4 -o loop ${TARGET_OS}/r.img ${OUT}/rootfs_mnt
     if [ $? -ne 0 ]; then
-        echo "failed to update kernel-modules to rootfs.img."
+        echo "failed to mount ${TARGET_OS}/r.img."
         exit 1
+    fi
+    cp -af ${OUT}/rootfs_mnt/* ${OUT}/rootfs_new/
+    umount ${OUT}/rootfs_mnt
+    rm -rf ${OUT}/rootfs_mnt
+    rm -f ${TARGET_OS}/r.img
+
+    # Processing rootfs_new
+    # Here s5pxx18 is different from h3/h5
+	
+    cp -af ${KMODULES_OUTDIR}/lib/firmware/* ${OUT}/rootfs_new/lib/firmware/
+    rm -rf ${OUT}/rootfs_new/lib/modules/*
+    cp -af ${KMODULES_OUTDIR}/lib/modules/* ${OUT}/rootfs_new/lib/modules/
+
+
+    # Make rootfs.img
+    ROOTFS_DIR=${OUT}/rootfs_new
+    # calc image size
+    ROOTFS_SIZE=`du -s -B 1 ${ROOTFS_DIR} | cut -f1`
+    # MAX_IMG_SIZE=7100000000
+    MAX_IMG_SIZE=3000000000
+    TMPFILE=`tempfile`
+    ${MKFS} -s -l ${MAX_IMG_SIZE} -a root -L rootfs /dev/null ${ROOTFS_DIR} > ${TMPFILE}
+    IMG_SIZE=`cat ${TMPFILE} | grep "Suggest size:" | cut -f2 -d ':' | awk '{gsub(/^\s+|\s+$/, "");print}'`
+    rm -f ${TMPFILE}
+
+    if [ ${ROOTFS_SIZE} -gt ${IMG_SIZE} ]; then
+            echo "IMG_SIZE less than ROOTFS_SIZE, why?"
+            exit 1
+    fi
+
+    # make fs
+    ${MKFS} -s -l ${IMG_SIZE} -a root -L rootfs ${TARGET_OS}/rootfs.img ${ROOTFS_DIR}
+    if [ $? -ne 0 ]; then
+            echo "error: failed to make rootfs.img."
+            exit 1
+    fi
+
+    if [ ${TARGET_OS} != "eflasher" ]; then
+        echo "IMG_SIZE=${IMG_SIZE}" > ${OUT}/${TARGET_OS}_rootfs-img.info
+        ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
     fi
 else 
 	echo "not found ${TARGET_OS}/rootfs.img"

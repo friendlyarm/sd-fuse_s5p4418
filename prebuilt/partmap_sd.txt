@@ -1,7 +1,0 @@
-flash=mmc,1:2ndboot:2nd:0x200,0x10000:bl1-mmcboot.bin;
-flash=mmc,1:fip-loader:boot:0x10200,0x50000:loader-mmc.img;
-flash=mmc,1:fip-secure:boot:0x40200,0x180000:bl_mon.img;
-flash=mmc,1:fip-nonsecure:boot:0x1E0200,0x100000:bootloader.img;
-flash=mmc,1:env:env:0x2E0200,0x4000;
-flash=mmc,1:boot:ext4:0x400000,0x4000000:boot.img;
-flash=mmc,1:rootfs:ext4:0x4400000,0:rootfs.img;

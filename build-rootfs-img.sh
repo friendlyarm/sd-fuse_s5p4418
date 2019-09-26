@@ -1,6 +1,5 @@
 #!/bin/bash
 set -eu
-set -x
 
 if [ $# -lt 2 ]; then
 	echo "Usage: $0 <rootfs dir> <img filename> "
@@ -37,8 +36,7 @@ fi
 if [ ${IMG_SIZE} -eq 0 ]; then
     # calc image size
     ROOTFS_SIZE=`du -s -B 1 ${ROOTFS_DIR} | cut -f1`
-    # MAX_IMG_SIZE=7100000000
-    MAX_IMG_SIZE=3000000000
+    MAX_IMG_SIZE=7100000000
     TMPFILE=`tempfile`
     ${MKFS} -s -l ${MAX_IMG_SIZE} -a root -L rootfs /dev/null ${ROOTFS_DIR} > ${TMPFILE}
     IMG_SIZE=`cat ${TMPFILE} | grep "Suggest size:" | cut -f2 -d ':' | awk '{gsub(/^\s+|\s+$/, "");print}'`
@@ -63,9 +61,9 @@ else
      fi
 fi
 
-# if [ ${TARGET_OS} != "eflasher" ]; then
-#     ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS} ${TOP}/prebuilt
-# fi
+if [ ${TARGET_OS} != "eflasher" ]; then
+    ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
+fi
 echo "generating ${IMG_FILE} done."
 echo 0
 

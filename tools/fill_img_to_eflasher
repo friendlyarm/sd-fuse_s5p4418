@@ -39,7 +39,11 @@ if [ $# -eq 4 ]; then
 else
 	case ${TARGET_OS} in
 	android)
-	        RAW_FILE=${SOC}-eflasher-android-$(date +%Y%m%d).img ;;
+	        RAW_FILE=${SOC}-eflasher-android-lollipop-$(date +%Y%m%d).img ;;
+	android7)
+	        RAW_FILE=${SOC}-eflasher-android7-$(date +%Y%m%d).img ;;
+	kitkat)
+	        RAW_FILE=${SOC}-eflasher-android-kitkat-$(date +%Y%m%d).img ;;
 	friendlycore)
 	        RAW_FILE=${SOC}-eflasher-friendlycore-${CODENAME}-4.4-$(date +%Y%m%d).img ;;
 	friendlywrt)

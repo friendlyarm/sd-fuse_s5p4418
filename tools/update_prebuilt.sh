@@ -10,7 +10,9 @@ set -eu
 cp -f $2/partmap.txt $1/
 cp -f $2/bl1-mmcboot.bin $1/
 cp -f $2/loader-mmc.img $1/
-cp -f $2/bl_mon.img $1
+cp -f $2/bl_mon.img $1/
+
+# TODO: env.conf?
 
 USERDATA_SIZE=104857600
 echo "Generating empty userdata.img (size:${USERDATA_SIZE})"

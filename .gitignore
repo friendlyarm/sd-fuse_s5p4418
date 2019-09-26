@@ -6,6 +6,8 @@
 # Normal rules
 #
 
+/test/out
+/test/tmp
 /out
 *.rej
 *.orig

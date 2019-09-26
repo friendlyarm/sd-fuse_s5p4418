@@ -43,7 +43,7 @@ lubuntu)
 eflasher)
 	ROMFILE=emmc-flasher-images.tgz;;
 *)
-	echo "Usage: $0 <android|friendlycore|friendlywrt|lubuntu|eflasher>"
+	echo "Usage: $0 <android|android7|kitkat|friendlycore|friendlywrt|lubuntu|eflasher>"
 	exit 1
 esac
 
