@@ -26,26 +26,11 @@ OPT_URL=http://wiki.friendlyarm.com/download
 BOARD=S5P4418/images-for-eflasher
 
 TARGET_OS=${1,,}
-
-case ${TARGET_OS} in
-android)
-	ROMFILE=android-lollipop-images.tgz;;
-android7)
-	ROMFILE=android-nougat-images.tgz;;
-kitkat)
-	ROMFILE=android-kitkat-images.tgz;;
-friendlywrt)
-	ROMFILE=friendlywrt-images.tgz;;
-friendlycore)
-	ROMFILE=friendlycore-images.tgz;;
-lubuntu)
-	ROMFILE=lubuntu-desktop-images.tgz;;
-eflasher)
-	ROMFILE=emmc-flasher-images.tgz;;
-*)
+ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
+if [ -z ${ROMFILE} ]; then
 	echo "Usage: $0 <android|android7|kitkat|friendlycore|friendlywrt|lubuntu|eflasher>"
 	exit 1
-esac
+fi
 
 #----------------------------------------------------------
 # local functions

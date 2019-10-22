@@ -82,13 +82,13 @@ friendlycore* | lubuntu* | friendlywrt | kitkat | android | android7 | eflasher)
 esac
 
 if [[ ! -z ${TARGET_OS} && ! -f ${PARTMAP} ]]; then
+	ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
 	cat << EOF
 Warn: Image not found for ${TARGET_OS}
 ----------------
 you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
 the image files are stored in a directory called images-for-eflasher, for example:
-    tar xvzf ../NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
-    sudo ./fusing.sh /dev/sdX friendlycore-arm64
+    tar xvzf /path/to/NETDISK/images-for-eflasher/${ROMFILE}
 ----------------
 Or, download from http (Y/N)?
 EOF
