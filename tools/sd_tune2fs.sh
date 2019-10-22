@@ -83,24 +83,24 @@ echo "Update ext4fs for Android on $1..."
 umount /dev/${DEV_NAME}* > /dev/null 2>&1
 
 if [ -b /dev/${DEV_NAME}1 ]; then
-	FA_DoExec tune2fs /dev/${DEV_NAME}1 -U ${UUID}01 -L boot
+	FA_DoExec "echo y | tune2fs /dev/${DEV_NAME}1 -U ${UUID}01 -L boot"
 fi
 
 if [ -b /dev/${DEV_NAME}2 ]; then
-	FA_DoExec tune2fs /dev/${DEV_NAME}2 -U ${UUID}02 -L system
+	FA_DoExec "echo y | tune2fs /dev/${DEV_NAME}2 -U ${UUID}02 -L system"
 fi
 
 if [ -b /dev/${DEV_NAME}3 ]; then
-	FA_DoExec tune2fs /dev/${DEV_NAME}3 -U ${UUID}03 -L cache
+	FA_DoExec "echo y | tune2fs /dev/${DEV_NAME}3 -U ${UUID}03 -L cache"
 fi
 
 if [ -b /dev/${DEV_NAME}7 ]; then
 	FA_DoExec resize2fs /dev/${DEV_NAME}7 -f
-	FA_DoExec tune2fs /dev/${DEV_NAME}7 -U ${UUID}07 -L userdata
+	FA_DoExec "echo y | tune2fs /dev/${DEV_NAME}7 -U ${UUID}07 -L userdata"
 
 elif [ -b /dev/${DEV_NAME}4 ]; then
 	FA_DoExec resize2fs /dev/${DEV_NAME}4 -f
-	FA_DoExec tune2fs /dev/${DEV_NAME}4 -U ${UUID}04 -L userdata
+	FA_DoExec "echo y | tune2fs /dev/${DEV_NAME}4 -U ${UUID}04 -L userdata"
 fi
 
 sync
