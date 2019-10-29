@@ -25,7 +25,7 @@ KERNEL_REPO=https://github.com/friendlyarm/linux
 KERNEL_BRANCH=nanopi2-v4.4.y
 
 ARCH=arm
-KCFG=nanopi2_linux_defconfig
+true ${KCFG:=nanopi2_linux_defconfig}
 KIMG=arch/${ARCH}/boot/zImage
 KDTB=arch/${ARCH}/boot/dts/s5p4418-nanopi2-*.dtb
 KALL=
@@ -175,7 +175,7 @@ fi
 
 cd ${TOPPATH}
 download_img ${TARGET_OS}
-./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
+KCFG=${KCFG} ./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
 
 
 if [ $? -eq 0 ]; then
