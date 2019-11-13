@@ -17,6 +17,7 @@ KERNEL_DIR=$2
 BOOT_DIR=$3
 ROOTFS_DIR=$4
 PREBUILT=$5
+TARGET_OS=$6
 
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 
@@ -24,6 +25,7 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 rsync -a --no-o --no-g ${KERNEL_DIR}/${KIMG} ${BOOT_DIR}
 rsync -a --no-o --no-g ${KERNEL_DIR}/${KDTB} ${BOOT_DIR}
 rsync -a --no-o --no-g ${PREBUILT}/boot/* ${BOOT_DIR}
+rsync -a --no-o --no-g ${PREBUILT}/ramdisk.img ${BOOT_DIR}
 
 # rootfs
 rm -rf ${ROOTFS_DIR}/lib/modules/*
