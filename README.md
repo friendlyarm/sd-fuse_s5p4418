@@ -139,7 +139,7 @@ echo hello > friendlycore/rootfs/root/welcome.txt
 ```
 Remake rootfs.img:
 ```
-./build-rootfs-img.sh friendlycore/rootfs friendlycore/rootfs.img
+./build-rootfs-img.sh friendlycore/rootfs friendlycore
 ```
 Make sdboot image:
 ```
