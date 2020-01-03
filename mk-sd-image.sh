@@ -62,7 +62,7 @@ if [ $# -eq 2 ]; then
     lubuntu)
         RAW_SIZE_MB=7800 ;;
     friendlywrt)
-        RAW_SIZE_MB=640 ;;
+        RAW_SIZE_MB=1000 ;;
     android)
         RAW_SIZE_MB=7800 ;;
     android7)
@@ -84,7 +84,7 @@ else
 		RAW_SIZE_MB=7800 ;;
 	friendlywrt)
 		RAW_FILE=${SOC}-friendlywrt-xenial-4.4-armhf-$(date +%Y%m%d).img
-		RAW_SIZE_MB=640 ;;
+		RAW_SIZE_MB=1000 ;;
 	android)
 		RAW_FILE=${SOC}-android-lollipop-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
