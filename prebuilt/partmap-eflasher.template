@@ -1,0 +1,8 @@
+flash=mmc,0:2ndboot:2nd:0x200,0x10000:bl1-mmcboot.bin;
+flash=mmc,0:fip-loader:boot:0x10200,0x50000:loader-mmc.img;
+flash=mmc,0:fip-secure:boot:0x40200,0x180000:bl_mon.img;
+flash=mmc,0:fip-nonsecure:boot:0x1E0200,0x100000:bootloader.img;
+flash=mmc,0:env:env:0x2E0200,0x4000;
+flash=mmc,0:data:fat:<USERDATA_PARTITION_ADDR>,0x0;
+flash=mmc,0:boot:ext4:0x00400000,0x04000000:boot.img;
+flash=mmc,0:rootfs:ext4:0x04400000,<ROOTFS_PARTITION_SIZE>:rootfs.img;

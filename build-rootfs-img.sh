@@ -61,9 +61,7 @@ else
      fi
 fi
 
-if [ ${TARGET_OS} != "eflasher" ]; then
-    ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
-fi
+${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
 echo "generating ${IMG_FILE} done."
 echo 0
 

@@ -58,7 +58,14 @@ if [ -z ${IMG_SIZE} ]; then
     exit 1
 fi
 
-SRC_PARTMAP_TPL=${TOP}/prebuilt/partmap.template
+case ${TARGET_OS} in
+eflasher)
+    SRC_PARTMAP_TPL=${TOP}/prebuilt/partmap-eflasher.template
+    ;;
+*)
+    SRC_PARTMAP_TPL=${TOP}/prebuilt/partmap.template
+    ;;
+esac
 DEST_PARTMAP_TXT=${TARGET_OS}/partmap.txt
 if [ -f ${SRC_PARTMAP_TPL} ]; then
     cp -avf ${SRC_PARTMAP_TPL} ${DEST_PARTMAP_TXT}
