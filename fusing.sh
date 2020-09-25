@@ -155,7 +155,6 @@ echo ""
 
 true ${FW_SETENV:=./tools/${ARCH}fw_setenv}
 true ${SD_UPDATE:=./tools/${ARCH}sd_update}
-true ${SD_TUNEFS:=./tools/sd_tune2fs.sh}
 
 [[ -z $2 && ! -f ${PARTMAP} ]] && {
 	echo "abort, args2 = $2, partmap = ${PARTMAP}"
@@ -199,12 +198,13 @@ else
 	# optional: update uuid & label
 	case ${TARGET_OS} in
 	android | android7 | kitkat)
-		sleep 1
-		${SD_TUNEFS} /dev/${DEV_NAME};;
+        echo ""
+        ;;
 	friendlycore* | lubuntu* | friendlywrt*)
 		sleep 1
         echo "### try to resize2fs: /dev/${DEV_PART}"
-		resize2fs -f /dev/${DEV_PART};;
+		resize2fs -f /dev/${DEV_PART}
+        ;;
 	esac
 fi
 
