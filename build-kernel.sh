@@ -20,6 +20,7 @@ set -eu
 
 true ${SOC:=s5p4418}
 true ${DISABLE_MKIMG:=0}
+true ${LOGO:=}
 
 KERNEL_REPO=https://github.com/friendlyarm/linux
 KERNEL_BRANCH=nanopi2-v4.4.y
@@ -57,7 +58,8 @@ function usage() {
        echo "# or clone your local repo:"
        echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# then"
-       echo "    ./build-kernel.sh friendlycore"
+       echo "    LOGO=/tmp/logo.bmp ./build-kernel.sh friendlycore"
+       echo "    LOGO=/tmp/logo.bmp ./build-kernel.sh eflasher"
        echo "    ./mk-emmc-image.sh friendlycore"
        echo "# also can do:"
        echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore"
@@ -122,6 +124,12 @@ if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
 	echo "\tcat toolchain-4.9.3-armhf.tar.gz* | sudo tar xz -C /"
 	exit 1
 fi
+if [ -f "${LOGO}" ]; then
+	cp -f ${LOGO} ${KERNEL_SRC}/logo.bmp
+	echo "using ${LOGO} as logo."
+else
+	echo "using official logo."
+fi
 export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin/:$PATH
 
 cd ${KERNEL_SRC}
@@ -175,7 +183,7 @@ fi
 
 cd ${TOPPATH}
 download_img ${TARGET_OS}
-KCFG=${KCFG} ./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
+LOGO=${LOGO} KCFG=${KCFG} ./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
 
 
 if [ $? -eq 0 ]; then

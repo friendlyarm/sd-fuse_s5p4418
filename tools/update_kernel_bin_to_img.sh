@@ -14,6 +14,7 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 TOP=$PWD
+true ${LOGO:=}
 true ${MKFS:="${TOP}/tools/make_ext4fs"}
 true ${MKFS:="${TOP}/tools/make_ext4fs"}
 true ${SOC:=s5p4418}
@@ -50,6 +51,10 @@ if [ -f ${TARGET_OS}/boot.img ]; then
 
     cp ${KERNEL_BUILD_DIR}/${KIMG} ${OUT}/boot/
     cp -avf ${KERNEL_BUILD_DIR}/${KDTB} ${OUT}/boot/
+	
+	if [ -f "${LOGO}" ]; then
+		cp -avf ${LOGO} ${OUT}/boot/
+	fi
 
     ./build-boot-img.sh ${OUT}/boot ${TARGET_OS}/boot.img
     if [ $? -ne 0 ]; then
