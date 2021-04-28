@@ -91,8 +91,8 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     ROOTFS_DIR=${OUT}/rootfs_new
     # calc image size
     ROOTFS_SIZE=`du -s -B 1 ${ROOTFS_DIR} | cut -f1`
-    # MAX_IMG_SIZE=7100000000
-    MAX_IMG_SIZE=3000000000
+    # +256m
+    MAX_IMG_SIZE=$((${ROOTFS_SIZE} + 256*1024*1024))
     TMPFILE=`tempfile`
     ${MKFS} -s -l ${MAX_IMG_SIZE} -a root -L rootfs /dev/null ${ROOTFS_DIR} > ${TMPFILE}
     IMG_SIZE=`cat ${TMPFILE} | grep "Suggest size:" | cut -f2 -d ':' | awk '{gsub(/^\s+|\s+$/, "");print}'`
