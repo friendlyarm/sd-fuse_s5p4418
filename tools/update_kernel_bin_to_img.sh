@@ -115,10 +115,8 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
             exit 1
     fi
 
-    if [ ${TARGET_OS} != "eflasher" ]; then
-        echo "IMG_SIZE=${IMG_SIZE}" > ${OUT}/${TARGET_OS}_rootfs-img.info
-        ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
-    fi
+    echo "IMG_SIZE=${IMG_SIZE}" > ${OUT}/${TARGET_OS}_rootfs-img.info
+    ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
 else 
 	echo "not found ${TARGET_OS}/rootfs.img"
 	exit 1
