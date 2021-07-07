@@ -13,6 +13,8 @@ friendlywrt)
         ROMFILE=friendlywrt-images.tgz;;
 friendlycore)
         ROMFILE=friendlycore-images.tgz;;
+friendlycore-lite-focal)
+        ROMFILE=friendlycore-lite-focal-images.tgz;;
 lubuntu)
         ROMFILE=lubuntu-desktop-images.tgz;;
 eflasher)

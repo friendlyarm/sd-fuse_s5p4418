@@ -18,7 +18,7 @@ git clone https://github.com/friendlyarm/sd-fuse_s5p4418.git
 cd sd-fuse_s5p4418
 sudo ./fusing.sh /dev/sdX friendlycore
 ```
-You can build the following OS: friendlycore, lubuntu, eflasher, android7, android, kitkat.  
+You can build the following OS: friendlycore, friendlycore-lite-focal, lubuntu, eflasher, android7, android, kitkat.  
 
 Notes:  
 fusing.sh will check the local directory for a directory with the same name as OS, if it does not exist fusing.sh will go to download it from network.  
@@ -70,11 +70,11 @@ sudo ./mk-emmc-image.sh friendlycore
 ```
 The following file will be generated:  
 ```
-out/s5p4418-eflasher-friendlycore-bionic-4.4-yyyymmdd.img
+out/s5p4418-eflasher-friendlycore-xenial-4.4-arm64-yyyymmdd.img
 ```
 You can use dd to burn this file into an sd card:
 ```
-dd if=out/out/s5p4418-eflasher-friendlycore-bionic-4.4-yyyymmdd.img of=/dev/sdX bs=1M
+dd if=out/out/s5p4418-eflasher-friendlycore-xenial-4.4-arm64-yyyymmdd.img of=/dev/sdX bs=1M
 ```
 
 ## Replace the file you compiled

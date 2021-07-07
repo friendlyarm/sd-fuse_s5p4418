@@ -19,7 +19,7 @@ set -eu
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlycore|lubuntu|android|android7|kitkat|friendlywrt|eflasher>"
+       echo "Usage: $0 <friendlycore|friendlycore-lite-focal|lubuntu|android|android7|kitkat|friendlywrt|eflasher>"
        exit 0
 }
 
@@ -59,6 +59,8 @@ if [ $# -eq 2 ]; then
     case ${TARGET_OS} in
     friendlycore)
         RAW_SIZE_MB=7800 ;;
+	friendlycore-lite-focal)
+		RAW_SIZE_MB=7800 ;;
     lubuntu)
         RAW_SIZE_MB=7800 ;;
     friendlywrt)
@@ -77,7 +79,10 @@ if [ $# -eq 2 ]; then
 else
 	case ${TARGET_OS} in
 	friendlycore)
-		RAW_FILE=${SOC}-friendly-core-xenial-4.4-armhf-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-friendlycore-xenial-4.4-armhf-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	friendlycore-lite-focal)
+		RAW_FILE=${SOC}-friendlycore-lite-focal-4.4-armhf-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	lubuntu)
 		RAW_FILE=${SOC}-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
