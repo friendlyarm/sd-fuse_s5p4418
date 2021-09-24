@@ -79,31 +79,31 @@ if [ $# -eq 2 ]; then
 else
 	case ${TARGET_OS} in
 	friendlycore)
-		RAW_FILE=${SOC}-friendlycore-xenial-4.4-armhf-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-friendlycore-xenial-4.4-armhf-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	friendlycore-lite-focal)
-		RAW_FILE=${SOC}-friendlycore-lite-focal-4.4-armhf-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-friendlycore-lite-focal-4.4-armhf-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	lubuntu)
-		RAW_FILE=${SOC}-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	friendlywrt)
-		RAW_FILE=${SOC}-friendlywrt-xenial-4.4-armhf-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-friendlywrt-xenial-4.4-armhf-$(date +%Y%m%d).img
 		RAW_SIZE_MB=1000 ;;
 	android)
-		RAW_FILE=${SOC}-android-lollipop-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-android-lollipop-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	android7)
-		RAW_FILE=${SOC}-android7-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-android7-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	kitkat)
-		RAW_FILE=${SOC}-android-kitkat-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-android-kitkat-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	eflasher)
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	*)
-		RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	esac
 fi
