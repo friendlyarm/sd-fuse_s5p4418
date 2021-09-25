@@ -103,7 +103,7 @@ else
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	*)
-		RAW_FILE=${SOC}-sd-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-${TARGET_OS}-sd8g-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	esac
 fi
