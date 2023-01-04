@@ -8,7 +8,7 @@ KERNEL_BRANCH=nanopi2-v4.4.y
 # hack for me
 PCNAME=`hostname`
 if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-	HTTP_SERVER=192.168.1.9
+	HTTP_SERVER=127.0.0.1
 	KERNEL_URL=git@192.168.1.5:/devel/kernel/linux.git
 	KERNEL_BRANCH=nanopi2-v4.4.y
 fi
@@ -20,9 +20,9 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_s5p4418
 cd sd-fuse_s5p4418
-wget http://${HTTP_SERVER}/dvdfiles/S5P4418/images-for-eflasher/friendlycore-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P4418/images-for-eflasher/friendlycore-images.tgz
 tar xzf friendlycore-images.tgz
-wget http://${HTTP_SERVER}/dvdfiles/S5P4418/images-for-eflasher/emmc-flasher-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P4418/images-for-eflasher/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
 
 git clone ${KERNEL_URL} -b ${KERNEL_BRANCH} --depth 1 kernel-s5p4418

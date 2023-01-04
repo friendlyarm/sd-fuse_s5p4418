@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -eu
+set -eu
 
 # ----------------------------------------------------------
 # base setup
@@ -12,7 +12,6 @@ SOC=$2
 TARGET_OS=$3
 
 OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
-CODENAME=xenial
 
 [ -z ${EFLASHER_RAW_IMG} -o -z ${SOC} -o -z ${TARGET_OS} ] && {
         echo "Usage: $0 <image name> <plat>"
@@ -34,33 +33,59 @@ CODENAME=xenial
         exit 1
 }
 
-if [ $# -eq 4 ]; then
-	RAW_FILE=$4
-else
-	case ${TARGET_OS} in
-	android)
-	        RAW_FILE=${SOC}-eflasher-android-lollipop-$(date +%Y%m%d).img ;;
-	android7)
-	        RAW_FILE=${SOC}-eflasher-android7-$(date +%Y%m%d).img ;;
-	kitkat)
-	        RAW_FILE=${SOC}-eflasher-android-kitkat-$(date +%Y%m%d).img ;;
-	friendlycore)
-	        RAW_FILE=${SOC}-eflasher-friendlycore-${CODENAME}-4.4-$(date +%Y%m%d).img ;;
-	friendlycore-lite-focal)
-	        RAW_FILE=${SOC}-eflasher-friendlycore-lite-focal-4.4-$(date +%Y%m%d).img ;;
-	friendlywrt)
-	        RAW_FILE=${SOC}-eflasher-friendlywrt-4.4-$(date +%Y%m%d).img ;;
-	lubuntu)
-	        RAW_FILE=${SOC}-eflasher-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img ;;
-	eflasher)
-	        RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img ;;
-	*)
-	        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
-	esac
-fi
+case ${TARGET_OS} in
+android)
+        RAW_FILE=${SOC}-eflasher-android-lollipop-$(date +%Y%m%d).img ;;
+android7)
+        RAW_FILE=${SOC}-eflasher-android7-$(date +%Y%m%d).img ;;
+kitkat)
+        RAW_FILE=${SOC}-eflasher-android-kitkat-$(date +%Y%m%d).img ;;
+friendlycore)
+        RAW_FILE=${SOC}-eflasher-friendlycore-xenial-4.4-$(date +%Y%m%d).img ;;
+friendlycore-lite-focal)
+        RAW_FILE=${SOC}-eflasher-friendlycore-lite-focal-4.4-$(date +%Y%m%d).img ;;
+friendlywrt)
+        RAW_FILE=${SOC}-eflasher-friendlywrt-4.4-$(date +%Y%m%d).img ;;
+lubuntu)
+        RAW_FILE=${SOC}-eflasher-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img ;;
+eflasher)
+        RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img ;;
+*)
+        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
+esac
+
+AUTOSTART=no
+Args=( "$@" )
+# skip arg1,arg2,arg3
+for (( i=3; i<${#Args[@]}; i++ ));
+do
+	if [[ ! -z $(echo ${Args[$i]} | grep "autostart=" -i) ]]; then
+		YESORNO=$(echo ${Args[$i]:10} | tr '[:lower:]' '[:upper:]')
+		case ${YESORNO} in
+		YES|Y)
+			AUTOSTART=yes
+			;;
+		NO|N)
+			AUTOSTART=no
+			;;
+		*)
+			;;
+		esac
+	elif [[ ! -z $(echo ${Args[$i]} | grep "filename=") ]]; then
+        RAW_FILE=${Args[$i]:9}
+    elif [[ ! -z $(echo ${Args[$i]} | grep "=") ]]; then
+		echo "Warning: unknow arg: ${Args[$i]}"
+    else
+        RAW_FILE=${Args[$i]}
+    fi
+done
 
 gen_eflasher_conf()
 {
+    local AutoFlashOSName=
+    if [ ${3} = "yes" ]; then
+        AutoFlashOSName=${2}
+    fi
 	OSNamesMergeWithComma="friendlywr,friendlycore,android,lubuntu"
 	cat > ${1}/eflasher.conf <<EOL
 ; This is the eFlasher configuration file.
@@ -70,7 +95,7 @@ gen_eflasher_conf()
 ; Automate OS installation at system startup,
 ; The "autoStart" field specifies the path of your firmware,
 ; Available values: ${OSNamesMergeWithComma}
-autoStart=
+autoStart=${AutoFlashOSName}
 
 ; Automatically restore the specified backup at system startup,
 ; The "autoRestore" field specifies the path of your backup file.
@@ -79,6 +104,17 @@ autoRestore=
 ; If the "autoExit" set to true, the eflasher-gui will automatically exit after burning or restoring is completed,
 ; You can do something else after burning or restoring by modifying /opt/run-eflasher.sh.
 autoExit=false
+
+[UI]
+; HDMI overscan option, examples:
+;     screenSizePercent=auto
+;     screenSizePercent=90
+screenSizePercent=auto
+
+welcomeMessage=
+hideMenuButton=false
+hideBackupAndRestoreButton=false
+hideStatusBar=false
 EOL
 }
 
@@ -100,11 +136,12 @@ losetup ${DEV} ${FULLIMG}
 partprobe ${DEV}
 mkdir -p ${MNT}
 mount -t exfat ${DEV}p1 ${MNT}
-gen_eflasher_conf ${MNT}
+gen_eflasher_conf ${MNT} ${TARGET_OS} ${AUTOSTART}
 mkdir -p ${MNT}/${TARGET_OS}
 rm -rf ${MNT}/${TARGET_OS}/*
 echo "copying ${OS_IMAGES_DIR}/* to ${MNT}/${TARGET_OS} ..."
 (cd ${OS_IMAGES_DIR} && find . -maxdepth 1 -type f -exec cp {} ${MNT}/${TARGET_OS} \;)
+
 umount ${MNT}
 losetup -d ${DEV}
 ls -l ${FULLIMG}
