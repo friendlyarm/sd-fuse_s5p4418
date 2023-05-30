@@ -60,7 +60,7 @@ If the files are not prepared in advance, the script will automatically download
 *Note: Here we use friendlycore system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/s5p4418):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master sd-fuse_s5p4418
+git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master --single-branch sd-fuse_s5p4418
 cd sd-fuse_s5p4418
 wget http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xvzf friendlycore-images.tgz
@@ -83,7 +83,7 @@ out/s5p4418-sd-friendlycore-xenial-4.4-armhf-YYYYMMDD.img
 *Note: Here we use friendlycore system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher), here you need to download the friendlycore and eflasher [pre-built images](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master sd-fuse_s5p4418
+git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master --single-branch sd-fuse_s5p4418
 cd sd-fuse_s5p4418
 wget http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xvzf friendlycore-images.tgz
@@ -103,7 +103,7 @@ out/s5p4418-eflasher-friendlycore-xenial-4.4-YYYYMMDD.img
 *Note: Here we use friendlycore system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master sd-fuse_s5p4418
+git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master --single-branch sd-fuse_s5p4418
 cd sd-fuse_s5p4418
 wget http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xvzf friendlycore-images.tgz
@@ -138,7 +138,7 @@ Or build SD-to-eMMC image:
 *Note: Here we use friendlycore system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master sd-fuse_s5p4418
+git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master --single-branch sd-fuse_s5p4418
 cd sd-fuse_s5p4418
 wget http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xvzf friendlycore-images.tgz
@@ -170,7 +170,7 @@ export KCFG=my_defconfig
 *Note: Here we use friendlycore system as an example* 
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher)::
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master sd-fuse_s5p4418
+git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master --single-branch sd-fuse_s5p4418
 cd sd-fuse_s5p4418
 wget http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xvzf friendlycore-images.tgz

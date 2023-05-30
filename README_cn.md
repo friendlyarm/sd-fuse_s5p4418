@@ -60,7 +60,7 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 *注: 这里以friendlycore系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压friendlycore系统的[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher), 由于http服务器带宽的关系, wget命令可能会比较慢, 推荐从网盘上下载同名的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master sd-fuse_s5p4418
+git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master --single-branch sd-fuse_s5p4418
 cd sd-fuse_s5p4418
 wget http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xvzf friendlycore-images.tgz
@@ -83,7 +83,7 @@ out/s5p4418-sd-friendlycore-xenial-4.4-armhf-YYYYMMDD.img
 *注: 这里以friendlycore系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher), 这里需要下载friendlycore和eflasher系统的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master sd-fuse_s5p4418
+git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master --single-branch sd-fuse_s5p4418
 cd sd-fuse_s5p4418
 wget http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xvzf friendlycore-images.tgz
@@ -103,7 +103,7 @@ out/s5p4418-eflasher-friendlycore-xenial-4.4-YYYYMMDD.img
 *注: 这里以friendlycore系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master sd-fuse_s5p4418
+git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master --single-branch sd-fuse_s5p4418
 cd sd-fuse_s5p4418
 wget http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xvzf friendlycore-images.tgz
@@ -137,7 +137,7 @@ sudo ./build-rootfs-img.sh friendlycore/rootfs friendlycore
 *注: 这里以friendlycore系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master sd-fuse_s5p4418
+git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master --single-branch sd-fuse_s5p4418
 cd sd-fuse_s5p4418
 wget http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xvzf friendlycore-images.tgz
@@ -169,7 +169,7 @@ export KCFG=my_defconfig
 *注: 这里以friendlycore系统为例进行说明* 
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master sd-fuse_s5p4418
+git clone https://github.com/friendlyarm/sd-fuse_s5p4418 -b master --single-branch sd-fuse_s5p4418
 cd sd-fuse_s5p4418
 wget http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xvzf friendlycore-images.tgz
