@@ -98,8 +98,19 @@ The following flashable image file will be generated, ready to be used to boot t
 ```
 out/s5p4418-eflasher-friendlycore-xenial-4.4-YYYYMMDD.img
 ```
-
-### Build your own root filesystem image
+### Backup rootfs and create custom SD image (to burn your application into other boards)
+#### Backup rootfs
+Run the following commands on your target board. These commands will back up the entire root partition:
+```
+sudo passwd root
+su root
+cd /
+tar --warning=no-file-changed -cvpzf /rootfs.tar.gz \
+    --exclude=/rootfs.tar.gz --exclude=/var/lib/docker/runtimes \
+    --exclude=/etc/firstuser --exclude=/etc/friendlyelec-release \
+    --exclude=/usr/local/first_boot_flag --one-file-system /
+```
+#### Making a bootable SD card from a root filesystem
 *Note: Here we use friendlycore system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher):
 ```
@@ -108,7 +119,7 @@ cd sd-fuse_s5p4418
 wget http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xvzf friendlycore-images.tgz
 ```
-Download the compressed root file system tar ball and unzip it, the unzip command requires root privileges, so you need put sudo in front of the command:
+Unzip the rootfs.tar.gz exported in the previous section, or download the filesystem archive from the following URL and unzip it, the unzip command requires root privileges, so you need put sudo in front of the command:
 ```
 wget http://112.124.9.243/dvdfiles/s5p4418/rootfs/rootfs-friendlycore.tgz
 sudo tar xzf rootfs-friendlycore.tgz
@@ -129,10 +140,6 @@ Or build SD-to-eMMC image:
 ```
 ./mk-emmc-image.sh friendlycore
 ```
-#### Tips
-
-* Using the debootstrap tool, you can customize the file system, pre-install packages, etc.
-
 
 ### Compiling the Kernel
 *Note: Here we use friendlycore system as an example*  
