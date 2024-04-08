@@ -25,7 +25,7 @@ BASE_URL=http://112.124.9.243/dvdfiles
 OPT_URL=http://wiki.friendlyarm.com/download
 BOARD=S5P4418/images-for-eflasher
 
-TARGET_OS=${1,,}
+TARGET_OS=$(echo ${1,,}|sed 's/\///g')
 ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
 if [ -z ${ROMFILE} ]; then
 	echo "Usage: $0 <android|android7|kitkat|friendlycore|friendlycore-lite-focal|friendlywrt|lubuntu|eflasher>"
@@ -102,4 +102,3 @@ if [ -f ${ROMFILE} ]; then
 	XOPTS="-C ${TARGET_OS} --strip-components=1"
 	FA_DoExec tar xzvf ${ROMFILE} ${XOPTS} || exit 1
 fi
-

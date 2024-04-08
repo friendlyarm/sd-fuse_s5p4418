@@ -30,7 +30,7 @@ true ${KCFG:=nanopi2_linux_defconfig}
 KIMG=arch/${ARCH}/boot/zImage
 KDTB=arch/${ARCH}/boot/dts/s5p4418-nanopi2-*.dtb
 KALL=
-CROSS_COMPILER=arm-linux-
+CROSS_COMPILE=arm-linux-
 
 # 
 # kernel logo:
@@ -48,7 +48,8 @@ if [ ! -d $OUT ]; then
 	exit 1
 fi
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
-true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
+true ${kernel_src:=${OUT}/kernel-${SOC}}
+true ${KERNEL_SRC:=${kernel_src}}
 
 function usage() {
        echo "Usage: $0 <friendlycore|friendlycore-lite-focal|lubuntu|friendlywrt|eflasher>"
@@ -70,9 +71,16 @@ if [ $# -ne 1 ]; then
     usage
 fi
 
+. ${TOPPATH}/tools/util.sh
+check_and_install_toolchain
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+check_and_install_package
+
 # ----------------------------------------------------------
 # Get target OS
-true ${TARGET_OS:=${1,,}}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
@@ -117,20 +125,12 @@ if [ ! -d ${KERNEL_SRC} ]; then
 	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}
 fi
 
-if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
-	echo "please install arm-linux-gcc 4.9.3 first, using these commands: "
-	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
-	echo "\tcd prebuilts/gcc-x64"
-	echo "\tcat toolchain-4.9.3-armhf.tar.gz* | sudo tar xz -C /"
-	exit 1
-fi
 if [ -f "${LOGO}" ]; then
 	cp -f ${LOGO} ${KERNEL_SRC}/logo.bmp
 	echo "using ${LOGO} as logo."
 else
 	echo "using official logo."
 fi
-export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin/:$PATH
 
 cd ${KERNEL_SRC}
 make distclean
@@ -164,7 +164,7 @@ if [ $? -ne 0 ]; then
 	echo "failed to build kernel modules."
         exit 1
 fi
-(cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILER}strip --strip-unneeded)
+(cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILE}strip --strip-unneeded)
 
 if [ ! -d ${KMODULES_OUTDIR}/lib ]; then
 	echo "not found kernel modules."
@@ -184,7 +184,6 @@ fi
 cd ${TOPPATH}
 download_img ${TARGET_OS}
 LOGO=${LOGO} KCFG=${KCFG} ./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
-
 
 if [ $? -eq 0 ]; then
     echo "updating kernel ok."

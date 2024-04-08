@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -26,11 +27,14 @@ if [ $# -eq 0 ]; then
     usage
 fi
 
+. tools/util.sh
+check_and_install_package
+
 # ----------------------------------------------------------
 # Get platform, target OS
 
 true ${SOC:=s5p4418}
-true ${TARGET_OS:=${1,,}}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
 friendlycore* | lubuntu* | android | android7 | kitkat | friendlywrt)
@@ -83,11 +87,9 @@ fi
 
 true ${RAW_SIZE_MB:=0}
 RAW_SIZE_MB=${RAW_SIZE_MB} ./mk-sd-image.sh eflasher && \
-	./tools/fill_img_to_eflasher out/${SOC}-eflasher-$(date +%Y%m%d).img ${SOC} $@ && { 
+	./tools/fill_img_to_eflasher out/${SOC}-eflasher-$(date +%Y%m%d).img ${SOC} $@ && {
 		rm -f out/${SOC}-eflasher-$(date +%Y%m%d).img
 		mkdir -p out/images-for-eflasher
 		tar czf out/images-for-eflasher/${TARGET_OS}-images.tgz ${TARGET_OS}
 		echo "all done."
 }
-
-

@@ -26,7 +26,7 @@ UBOOT_BRANCH=nanopi2-v2016.01
 
 ARCH=arm
 UCFG=s5p4418_nanopi2_defconfig
-CROSS_COMPILER=arm-linux-
+CROSS_COMPILE=arm-linux-
 
 TOPPATH=$PWD
 OUT=$TOPPATH/out
@@ -34,12 +34,8 @@ if [ ! -d $OUT ]; then
 	echo "path not found: $OUT"
 	exit 1
 fi
-
-true ${UBOOT_SRC:=${OUT}/uboot-${SOC}}
-echo "uboot src: ${UBOOT_SRC}"
-
-# You need to install:
-# apt-get install swig python-dev python3-dev
+true ${uboot_src:=${OUT}/uboot-${SOC}}
+true ${UBOOT_SRC:=${uboot_src}}
 
 function usage() {
        echo "Usage: $0 <friendlycore|friendlycore-lite-focal|friendlywrt>"
@@ -60,9 +56,28 @@ if [ $# -ne 1 ]; then
     usage
 fi
 
+. ${TOPPATH}/tools/util.sh
+check_and_install_toolchain
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+check_and_install_package
+
+if ! [ -x "$(command -v python2)" ]; then
+	sudo apt install python2
+fi
+if ! [ -x "$(command -v python)" ]; then
+    (cd /usr/bin/ && sudo ln -s python2 python)
+fi
+# get include path for this python version
+INCLUDE_PY=$(python -c "from distutils import sysconfig as s; print s.get_config_vars()['INCLUDEPY']")
+if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
+    sudo apt install python2-dev
+fi
+
 # ----------------------------------------------------------
 # Get target OS
-true ${TARGET_OS:=${1,,}}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
@@ -72,13 +87,6 @@ friendlycore* | friendlywrt | eflasher)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
         exit 0
 esac
-
-# Automatically re-run script under sudo if not root
-# if [ $(id -u) -ne 0 ]; then
-# 	echo "Re-running script under sudo..."
-# 	sudo UBOOT_SRC=${UBOOT_SRC} DISABLE_MKIMG=${DISABLE_MKIMG} "$0" "$@"
-# 	exit
-# fi
 
 download_img() {
     if [ ! -f ${PARTMAP} ]; then
@@ -114,33 +122,10 @@ if [ ! -d ${UBOOT_SRC} ]; then
 	git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}
 fi
 
-if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
-	echo "please install arm-linux-gcc 4.9.3 first by running these commands: "
-	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git"
-	echo "\tsudo mkdir -p /opt/FriendlyARM/toolchain"
-	echo "\tsudo tar xf prebuilts/gcc-x64/arm-cortexa9-linux-gnueabihf-4.9.3.tar.xz -C /opt/FriendlyARM/toolchain/"
-	exit 1
-fi
-export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin/:$PATH
-
-if ! [ -x "$(command -v simg2img)" ]; then
-    sudo apt install android-tools-fsutils
-fi
-
-if ! [ -x "$(command -v swig)" ]; then
-    sudo apt install swig
-fi
-
-# get include path for this python version
-INCLUDE_PY=$(python -c "from distutils import sysconfig as s; print s.get_config_vars()['INCLUDEPY']")
-if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
-    sudo apt install python-dev python3-dev
-fi  
-
 cd ${UBOOT_SRC}
-make clean
-make ${UCFG} ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILER}
-make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILER} -j$(nproc)
+make distclean
+make ${UCFG} ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
+make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} -j$(nproc)
 
 if [ $? -ne 0 ]; then
 	echo "failed to build uboot."

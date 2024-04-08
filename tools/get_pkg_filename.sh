@@ -1,7 +1,6 @@
 #!/bin/bash
 
-TARGET_OS=${1,,}
-
+TARGET_OS=$(echo ${1,,}|sed 's/\///g')
 case ${TARGET_OS} in
 android)
         ROMFILE=android-lollipop-images.tgz;;
