@@ -10,8 +10,9 @@ This repository is a bunch of scripts to build bootable SD card images for Frien
 *Read this in other languages: [简体中文](README_cn.md)*  
   
 ## Requirements
+* Supports x86_64 and aarch64 platforms
 * Recommended Host OS: Ubuntu 20.04 LTS (Bionic Beaver) 64-bit or Higher
-* It is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
+* For x86_64 user, it is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
 * Docker container: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
 ## Kernel Version Support
@@ -123,12 +124,12 @@ tar xvzf friendlycore-images.tgz
 Extract the rootfs.tar.gz exported in the previous section, the tar command requires root privileges, so you need put sudo in front of the command:
 ```
 mkdir friendlycore/rootfs
-sudo tar xvzfp rootfs.tar.gz -C friendlycore/rootfs --numeric-owner --same-owner
+./tools/extract-rootfs-tar.sh rootfs.tar.gz friendlycore/rootfs
 ```
 or download the filesystem archive from the following URL and extract it:
 ```
 wget http://112.124.9.243/dvdfiles/s5p4418/rootfs/rootfs-friendlycore.tgz
-sudo tar xvzfp rootfs-friendlycore.tgz --numeric-owner --same-owner
+./tools/extract-rootfs-tar.sh rootfs-friendlycore.tgz
 ```
 Change something:
 ```
