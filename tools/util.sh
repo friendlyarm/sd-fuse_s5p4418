@@ -35,7 +35,7 @@ function check_and_install_package() {
 		if [ -f /etc/os-release ]; then
 			. /etc/os-release
 			case "$VERSION_CODENAME" in
-			jammy|bookworm|bullseye)
+			noble|jammy|bookworm|bullseye)
 					PACKAGES="exfatprogs ${PACKAGES}"
 					;;
 			*)
@@ -49,7 +49,7 @@ function check_and_install_package() {
 		if [ -f /etc/os-release ]; then
 			. /etc/os-release
 			case "$VERSION_CODENAME" in
-			focal|jammy|bookworm|bullseye)
+			focal|jammy|noble|bookworm|bullseye)
 					PACKAGES="android-sdk-libsparse-utils ${PACKAGES}"
 					# PACKAGES="android-sdk-ext4-utils ${PACKAGES}"
 					;;

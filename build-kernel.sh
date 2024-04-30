@@ -176,10 +176,6 @@ if [ x"$DISABLE_MKIMG" = x"1" ]; then
 fi
 
 echo "building kernel ok."
-if ! [ -x "$(command -v simg2img)" ]; then
-    sudo apt update
-    sudo apt install android-tools-fsutils
-fi
 
 cd ${TOPPATH}
 download_img ${TARGET_OS}
