@@ -20,6 +20,7 @@ set -eu
 
 true ${SOC:=s5p4418}
 true ${DISABLE_MKIMG:=0}
+true ${SKIP_DISTCLEAN:=0}
 true ${LOGO:=}
 
 KERNEL_REPO=https://github.com/friendlyarm/linux
@@ -134,7 +135,9 @@ else
 fi
 
 cd ${KERNEL_SRC}
-make ARCH=${ARCH} distclean
+if [ ${SKIP_DISTCLEAN} -ne 1 ]; then
+	make ARCH=${ARCH} distclean
+fi
 touch .scmversion
 make ARCH=${ARCH} ${KCFG}
 if [ $? -ne 0 ]; then
