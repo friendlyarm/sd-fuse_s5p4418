@@ -48,14 +48,14 @@ if [ ! -d $OUT ]; then
 	exit 1
 fi
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
-true ${kernel_src:=${OUT}/kernel-${SOC}}
-true ${KERNEL_SRC:=${kernel_src}}
+true ${kernel_src:=out/kernel-${SOC}}
+true ${KERNEL_SRC:=$(readlink -f ${kernel_src})}
 
 function usage() {
        echo "Usage: $0 <friendlycore|friendlycore-lite-focal|lubuntu|friendlywrt|eflasher>"
        echo "# example:"
        echo "# clone kernel source from github:"
-       echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
+       echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${kernel_src}"
        echo "# or clone your local repo:"
        echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# then"
@@ -125,6 +125,7 @@ if [ ! -d ${KERNEL_SRC} ]; then
 	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}
 fi
 
+echo "kernel src: ${KERNEL_SRC}"
 if [ -f "${LOGO}" ]; then
 	cp -f ${LOGO} ${KERNEL_SRC}/logo.bmp
 	echo "using ${LOGO} as logo."
@@ -133,7 +134,7 @@ else
 fi
 
 cd ${KERNEL_SRC}
-make distclean
+make ARCH=${ARCH} distclean
 touch .scmversion
 make ARCH=${ARCH} ${KCFG}
 if [ $? -ne 0 ]; then
