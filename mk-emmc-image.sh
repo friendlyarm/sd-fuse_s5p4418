@@ -19,7 +19,7 @@ set -eu
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlycore|friendlycore-lite-focal|friendlywrt|lubuntu|android|android7|kitkat>"
+       echo "Usage: $0 <friendlycore|friendlycore-lite-noble|friendlywrt|lubuntu|android|android7|kitkat>"
        exit 0
 }
 

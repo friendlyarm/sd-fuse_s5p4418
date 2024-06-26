@@ -22,6 +22,7 @@ true ${SOC:=s5p4418}
 true ${DISABLE_MKIMG:=0}
 true ${SKIP_DISTCLEAN:=0}
 true ${LOGO:=}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 KERNEL_REPO=https://github.com/friendlyarm/linux
 KERNEL_BRANCH=nanopi2-v4.4.y
@@ -53,7 +54,7 @@ true ${kernel_src:=out/kernel-${SOC}}
 true ${KERNEL_SRC:=$(readlink -f ${kernel_src})}
 
 function usage() {
-       echo "Usage: $0 <friendlycore|friendlycore-lite-focal|lubuntu|friendlywrt|eflasher>"
+       echo "Usage: $0 <friendlycore|friendlycore-lite-noble|lubuntu|friendlywrt|eflasher>"
        echo "# example:"
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${kernel_src}"
@@ -79,11 +80,7 @@ if [ $? -ne 0 ]; then
 fi
 check_and_install_package
 
-# ----------------------------------------------------------
-# Get target OS
-true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 PARTMAP=./${TARGET_OS}/partmap.txt
-
 case ${TARGET_OS} in
 friendlycore* | lubuntu* | friendlywrt | eflasher)
         ;;

@@ -10,10 +10,9 @@ kitkat)
         ROMFILE=android-kitkat-images.tgz;;
 friendlywrt)
         ROMFILE=friendlywrt-images.tgz;;
-friendlycore)
-        ROMFILE=friendlycore-images.tgz;;
-friendlycore-lite-focal)
-        ROMFILE=friendlycore-lite-focal-images.tgz;;
+friendlycore*)
+        # don't cut TARGET_OS off
+        ROMFILE=${TARGET_OS}-images.tgz;;
 lubuntu)
         ROMFILE=lubuntu-desktop-images.tgz;;
 eflasher)

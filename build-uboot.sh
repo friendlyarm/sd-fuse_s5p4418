@@ -38,7 +38,7 @@ true ${uboot_src:=${OUT}/uboot-${SOC}}
 true ${UBOOT_SRC:=${uboot_src}}
 
 function usage() {
-       echo "Usage: $0 <friendlycore|friendlycore-lite-focal|friendlywrt>"
+       echo "Usage: $0 <friendlycore|friendlycore-lite-noble|friendlywrt>"
        echo "# example:"
        echo "# clone uboot source from github:"
        echo "    git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
@@ -62,7 +62,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 check_and_install_package
-
 if ! [ -x "$(command -v python2)" ]; then
 	sudo apt install python2
 fi

@@ -25,7 +25,7 @@ For other kernel versions, please switch to the related git branch.
 
 * lubuntu
 * friendlycore
-* friendlycore-lite-focal
+* friendlycore-lite-noble
 * android
 * android7
 * kitkat

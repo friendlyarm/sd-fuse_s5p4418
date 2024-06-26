@@ -21,7 +21,7 @@ set -eu
 # Checking device for fusing
 
 if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE [friendlycore|friendlycore-lite-focal|friendlywrt|lubuntu]"
+	echo "Usage: $0 DEVICE [friendlycore|friendlycore-lite-noble|friendlywrt|lubuntu]"
 	exit 0
 fi
 
