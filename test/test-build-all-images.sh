@@ -17,8 +17,8 @@ cd sd-fuse_s5p4418
 wget --no-proxy http://${HTTP_SERVER}/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
 tar xzf friendlycore-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/s5p4418/images-for-eflasher/friendlycore-lite-noble-images.tgz
-tar xzf friendlycore-lite-noble-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/s5p4418/images-for-eflasher/ubuntu-noble-core-images.tgz
+tar xzf ubuntu-noble-core-images.tgz
 
 wget --no-proxy http://${HTTP_SERVER}/dvdfiles/s5p4418/images-for-eflasher/friendlywrt-images.tgz
 tar xzf friendlywrt-images.tgz
@@ -35,8 +35,8 @@ tar xzf emmc-flasher-images.tgz
 sudo ./mk-sd-image.sh friendlycore
 sudo ./mk-emmc-image.sh friendlycore
 
-sudo ./mk-sd-image.sh friendlycore-lite-noble
-sudo ./mk-emmc-image.sh friendlycore-lite-noble
+sudo ./mk-sd-image.sh ubuntu-noble-core
+sudo ./mk-emmc-image.sh ubuntu-noble-core
 
 sudo ./mk-sd-image.sh friendlywrt
 sudo ./mk-emmc-image.sh friendlywrt

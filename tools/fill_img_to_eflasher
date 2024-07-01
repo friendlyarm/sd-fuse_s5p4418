@@ -41,7 +41,7 @@ kitkat)
         RAW_FILE=${SOC}-eflasher-android-kitkat-$(date +%Y%m%d).img ;;
 friendlycore)
         RAW_FILE=${SOC}-eflasher-friendlycore-xenial-4.4-armhf-$(date +%Y%m%d).img ;;
-friendlycore-lite-*)
+friendlycore-lite-*|ubuntu-*-core)
         # don't cut TARGET_OS off
         RAW_FILE=${SOC}-eflasher-${TARGET_OS}-4.4-armhf-$(date +%Y%m%d).img ;;
 friendlywrt)

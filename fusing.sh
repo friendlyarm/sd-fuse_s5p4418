@@ -21,7 +21,7 @@ set -eu
 # Checking device for fusing
 
 if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE [friendlycore|friendlycore-lite-noble|friendlywrt|lubuntu]"
+	echo "Usage: $0 DEVICE [friendlycore|ubuntu-noble-core|friendlywrt|lubuntu]"
 	exit 0
 fi
 
@@ -75,7 +75,7 @@ true ${TARGET_OS:=$(echo ${2,,}|sed 's/\///g')}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | friendlywrt | kitkat | android | android7 | eflasher)
+friendlycore* | ubuntu-*-core | lubuntu* | friendlywrt | kitkat | android | android7 | eflasher)
 	;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -196,7 +196,7 @@ else
 	android | android7 | kitkat)
         echo ""
         ;;
-	friendlycore* | lubuntu* | friendlywrt*)
+	friendlycore* | ubuntu-*-core | lubuntu* | friendlywrt*)
 		sleep 1
         echo "### try to resize2fs: /dev/${DEV_PART}"
 		resize2fs -f /dev/${DEV_PART}

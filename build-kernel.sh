@@ -54,7 +54,7 @@ true ${kernel_src:=out/kernel-${SOC}}
 true ${KERNEL_SRC:=$(readlink -f ${kernel_src})}
 
 function usage() {
-       echo "Usage: $0 <friendlycore|friendlycore-lite-noble|lubuntu|friendlywrt|eflasher>"
+       echo "Usage: $0 <friendlycore|ubuntu-noble-core|lubuntu|friendlywrt|eflasher>"
        echo "# example:"
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${kernel_src}"
@@ -82,7 +82,7 @@ check_and_install_package
 
 PARTMAP=./${TARGET_OS}/partmap.txt
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | friendlywrt | eflasher)
+friendlycore* | ubuntu-*-core | lubuntu* | friendlywrt | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

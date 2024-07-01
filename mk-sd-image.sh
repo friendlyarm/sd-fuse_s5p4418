@@ -19,7 +19,7 @@ set -eu
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlycore|friendlycore-lite-noble|lubuntu|android|android7|kitkat|friendlywrt|eflasher>"
+       echo "Usage: $0 <friendlycore|ubuntu-noble-core|lubuntu|android|android7|kitkat|friendlywrt|eflasher>"
        exit 0
 }
 
@@ -44,7 +44,7 @@ true ${SOC:=s5p4418}
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | android | android7 | kitkat | friendlywrt | eflasher)
+friendlycore* | ubuntu-*-core | lubuntu* | android | android7 | kitkat | friendlywrt | eflasher)
 	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -54,7 +54,7 @@ esac
 true ${RAW_SIZE_MB:=0}
 if [ $RAW_SIZE_MB -eq 0 ]; then
     case ${TARGET_OS} in
-    friendlycore*)
+    friendlycore*|ubuntu-*-core)
         RAW_SIZE_MB=7800 ;;
     lubuntu)
         RAW_SIZE_MB=7800 ;;
@@ -80,7 +80,7 @@ else
 	friendlycore)
 		RAW_FILE=${SOC}-sd-friendlycore-xenial-4.4-armhf-$(date +%Y%m%d).img
 		;;
-	friendlycore-lite-*)
+	friendlycore-lite-*|ubuntu-*-core)
 		# don't cut TARGET_OS off
 		RAW_FILE=${SOC}-sd-${TARGET_OS}-4.4-armhf-$(date +%Y%m%d).img
 		;;
