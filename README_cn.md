@@ -10,9 +10,9 @@ sd-fuse 提供一些工具和脚本, 用于制作SD卡固件, 具体用途如下
 *其他语言版本: [English](README.md)*  
   
 ## 运行环境
-* 支持 x86_64 和 aarch64 平台
+* 支持 x86_64 和 arm64 平台 (注：arm64需要是A53及以上)
 * 推荐的操作系统: Ubuntu 20.04及以上64位操作系统
-* 针对x86_64用户，推荐运行此脚本初始化开发环境: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
+* 脚本会提示安装必要的软件包
 * Docker容器: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
 ## 支持的内核版本
@@ -147,6 +147,7 @@ sudo ./build-rootfs-img.sh friendlycore/rootfs friendlycore
 RAW_SIZE_MB=16000 ./mk-sd-image.sh friendlycore
 RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlycore
 ```
+
 ### 编译内核
 *注: 这里以friendlycore系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/s5p4418/images-for-eflasher):
@@ -201,5 +202,9 @@ ls -1 /dev > ~/before.txt
 ls -1 /dev > ~/after.txt
 diff ~/before.txt ~/after.txt
 ```
+## 常见问题及解决办法
+* 制作rootfs后无法启动 (解决办法：可能是文件系统中的文件权限被破坏，要注意使用tools/extract-rootfs-tar.sh脚本来解压rootfs，tar命令指定-cpzf参数来打包)
+* 制作过程中有进程退出 (解决办法：机器内存不能过低)
+
 
 

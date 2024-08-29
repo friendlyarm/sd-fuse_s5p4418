@@ -19,7 +19,7 @@ set -eu
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlycore|ubuntu-noble-core|lubuntu|android|android7|kitkat|friendlywrt|eflasher>"
+       echo "Usage: $0 <img dir>"
        exit 0
 }
 
