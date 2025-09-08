@@ -165,7 +165,9 @@ git clone https://github.com/friendlyarm/linux -b nanopi2-v4.4.y --depth 1 kerne
 ```
 cd kernel
 touch .scmversion
+
 make ARCH=arm nanopi2_linux_defconfig
+
 make ARCH=arm CROSS_COMPILE=arm-linux- menuconfig     # 根据需要改动配置
 make ARCH=arm CROSS_COMPILE=arm-linux- savedefconfig
 cp defconfig ./arch/arm/configs/my_defconfig                  # 保存配置 my_defconfig

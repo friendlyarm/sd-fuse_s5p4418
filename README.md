@@ -165,7 +165,9 @@ Customize the kernel configuration:
 ```
 cd kernel
 touch .scmversion
+
 make ARCH=arm nanopi2_linux_defconfig
+
 make ARCH=arm CROSS_COMPILE=arm-linux- menuconfig
 make ARCH=arm CROSS_COMPILE=arm-linux- savedefconfig
 cp defconfig ./arch/arm/configs/my_defconfig                  # Save the configuration as my_defconfig
