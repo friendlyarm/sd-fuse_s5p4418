@@ -29,6 +29,18 @@ function has_built_kernel_modules() {
 	fi
 }
 
+function apt_install() {
+	case "${SDFUSE_NONINTERACTIVE:-}" in
+	y|Y|yes|YES|1|true|TRUE)
+		sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+			-o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold "$@"
+		;;
+	*)
+		sudo apt install "$@"
+		;;
+	esac
+}
+
 function check_and_install_package() {
 	local PACKAGES=
 	if ! command -v mkfs.exfat &>/dev/null; then
@@ -81,7 +93,7 @@ function check_and_install_package() {
 		PACKAGES="e2fsprogs ${PACKAGES}"
 	fi
 	if [ ! -z "${PACKAGES}" ]; then
-		sudo apt install ${PACKAGES}
+		apt_install ${PACKAGES}
 	fi
 }
 
