@@ -1,8 +1,11 @@
 #!/bin/bash
 set -eux
 
-HTTP_SERVER=112.124.9.243
-
+if [ -f "$(dirname "$(readlink -f "$0")")/../.use-local-r2" ]; then
+    CDN_URL=http://cdn.local/friendlyelec-cdn/os-images/s5p4418/images
+else
+    CDN_URL=https://downloads.friendlyelec.com/os-images/s5p4418/images
+fi
 # hack for me
 [ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))
 
@@ -13,7 +16,7 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_s5p4418
 cd sd-fuse_s5p4418
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P4418/images-for-eflasher/friendlycore-images.tgz
+wget ${CDN_URL}/friendlycore-images.tgz
 tar xzf friendlycore-images.tgz
 
 git clone https://github.com/friendlyarm/u-boot --depth 1 -b nanopi2-v2016.01 uboot-s5p4418

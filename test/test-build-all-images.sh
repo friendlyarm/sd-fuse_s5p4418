@@ -1,8 +1,11 @@
 #!/bin/bash
 set -eux
 
-HTTP_SERVER=112.124.9.243
-
+if [ -f "$(dirname "$(readlink -f "$0")")/../.use-local-r2" ]; then
+    CDN_URL=http://cdn.local/friendlyelec-cdn/os-images/s5p4418/images
+else
+    CDN_URL=https://downloads.friendlyelec.com/os-images/s5p4418/images
+fi
 # hack for me
 [ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))
 
@@ -14,22 +17,22 @@ cd tmp
 git clone ../../.git -b master sd-fuse_s5p4418
 cd sd-fuse_s5p4418
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/s5p4418/images-for-eflasher/friendlycore-images.tgz
+wget ${CDN_URL}/friendlycore-images.tgz
 tar xzf friendlycore-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/s5p4418/images-for-eflasher/ubuntu-noble-core-images.tgz
+wget ${CDN_URL}/ubuntu-noble-core-images.tgz
 tar xzf ubuntu-noble-core-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/s5p4418/images-for-eflasher/friendlywrt-images.tgz
+wget ${CDN_URL}/friendlywrt-images.tgz
 tar xzf friendlywrt-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/s5p4418/images-for-eflasher/lubuntu-desktop-images.tgz
+wget ${CDN_URL}/lubuntu-desktop-images.tgz
 tar xzf lubuntu-desktop-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/s5p4418/images-for-eflasher/android-nougat-images.tgz
+wget ${CDN_URL}/android-nougat-images.tgz
 tar xzf android-nougat-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/s5p4418/images-for-eflasher/emmc-flasher-images.tgz
+wget ${CDN_URL}/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
 
 sudo ./mk-sd-image.sh friendlycore

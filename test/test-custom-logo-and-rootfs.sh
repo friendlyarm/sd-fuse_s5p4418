@@ -1,7 +1,13 @@
 #!/bin/bash
 set -eu
 
-HTTP_SERVER=112.124.9.243
+if [ -f "$(dirname "$(readlink -f "$0")")/../.use-local-r2" ]; then
+    CDN_URL=http://cdn.local/friendlyelec-cdn/os-images/s5p4418/images
+    ROOTFS_URL=http://cdn.local/friendlyelec-cdn/rootfs/s5p4418
+else
+    CDN_URL=https://downloads.friendlyelec.com/os-images/s5p4418/images
+    ROOTFS_URL=https://downloads.friendlyelec.com/rootfs/s5p4418
+fi
 KERNEL_URL=https://github.com/friendlyarm/linux
 KERNEL_BRANCH=nanopi2-v4.4.y
 
@@ -14,17 +20,19 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_s5p4418
 cd sd-fuse_s5p4418
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P4418/images-for-eflasher/friendlycore-images.tgz
+wget ${CDN_URL}/friendlycore-images.tgz
 tar xzf friendlycore-images.tgz
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P4418/images-for-eflasher/emmc-flasher-images.tgz
+wget ${CDN_URL}/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P4418/rootfs/rootfs-friendlycore.tgz
+wget ${ROOTFS_URL}/rootfs-friendlycore.tgz
+wget ${ROOTFS_URL}/rootfs-friendlycore.tgz.sha256
+sha256sum -c rootfs-friendlycore.tgz.sha256
 tar xzf rootfs-friendlycore.tgz
 
 # custome rootfs: re-gen rootfs.img
 echo hello > friendlycore/rootfs/root/welcome.txt
 (cd friendlycore/rootfs/root/ && {
-	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P4418/images-for-eflasher/friendlycore-images.tgz -O deleteme.tgz
+	wget ${CDN_URL}/friendlycore-images.tgz -O deleteme.tgz
 });
 ./build-rootfs-img.sh friendlycore/rootfs friendlycore
 
